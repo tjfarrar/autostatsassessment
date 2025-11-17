@@ -1,0 +1,562 @@
+---
+params: 
+  domemo:
+    label: "Is it memo?"
+    value: NA
+  title:
+    label: "Title"
+    value: "The Title"
+  testdate:
+    label: "Assessment Date"
+    value: "my_Date"
+  starttime:
+    label: "Start Time"
+    value: "mytime1"
+  endtime:
+    label: "End Time"
+    value: "mytime2"
+  subjectname:
+    label: "Subject Name"
+    value: "Subject Name"
+  subjectcode:
+    label: "Subject Code"
+    value: "ABC360S"
+  testname:
+    label: "Assessment Name"
+    value: "Assessment"
+  testno:
+    label: "Assessment Nr"
+    value: 0L
+  qualname:
+    label: "Qualification Name"
+    value: "Diploma in ..."
+  qualcode: 
+    label: "Qualification Code"
+    value: "D3ABCD"
+  examiner:
+    label: "Examiner Name"
+    value: "Dr A Jones"
+  intmoderator:
+    label: "Internal Moderator Name"
+    value: "Ms A Smith"
+title: ""
+author: ""
+date: ""
+output: 
+  pdf_document:
+    includes:
+      in_header: "rmdpreamble.tex"
+    number_sections: true
+  fontsize: 11pt
+  geometry: margin=1in
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(readxl)
+library(knitr)
+library(exams)
+library(kableExtra)
+opts_chunk$set(message = FALSE, results = "markup", 
+               warning = FALSE, echo = FALSE)
+
+starttime <- gsub("h", ":", tolower(params$starttime))
+endtime <- gsub("h", ":", tolower(params$endtime))
+
+startt <- as.POSIXct(paste(params$testdate, starttime), format = "%Y-%m-%d %H:%M")
+endt <- as.POSIXct(paste(params$testdate, endtime), format = "%Y-%m-%d %H:%M")
+duration <- as.numeric(difftime(endt, startt, units = "hours"))
+
+# Within each c() are the mark allocations for a particular question
+# So if Question 1 has one part worth 9 marks,
+# and Question 2 has parts a and b worth 4 and 5 marks respectively, 
+# we would have c(9), c(4, 5)
+qmarks <- list(c(2, 2, 2, 2, 2), c(3, 3, 3, 2), c(3, 3, 3),
+               c(4, 4))
+```
+
+```{r, echo=FALSE, include=TRUE, results='asis'}
+if (params$domemo) {
+  cat("\\newif\\ifmemo\n \\memotrue \n\\newif \\ifnotmemo")
+} else {
+  cat("\\newif \\ifmemo\n \\newif\\ifnotmemo\n\\notmemotrue")
+}
+```
+
+\title{\textbf{`r subjectname` (`r subjectcode`) `r testname` `r testno` \ifmemo\textcolor{red}{Memo \the\year}\fi}}
+\date{}
+\maketitle
+
+\thispagestyle{fancy}
+\ifnotmemo
+\begin{table}[h!]
+	\begin{tabular}{|l|p{6cm}|p{2.5cm}|p{3.5cm}|}
+		\hline
+	Qualification Name & `r params$qualname` & Qualification Code & `r params$qualcode` \\
+	\hline
+	Examiner & `r params$examiner` & Date & `r format(params$testdate, "%e %B %Y")` \\
+	\hline
+	Examiner's Department & Mathematics \& Physics & Time & `r params$starttime` -- `r params$endtime`\\
+	\hline
+	Internal Moderator & `r params$intmoderator` & Duration & `r str_to_title(words(duration))` Hours \\
+	\hline
+	Total Pages & \pageref{LastPage} & Total Marks & `r sum(unlist(qmarks))` \\
+	\hline
+	\multicolumn{4}{|l|}{\makecell[l]{Instructions \\ \\
+\tabitem You must answer all questions. You may answer the questions in any order. \\
+\tabitem All answers must be written in the answer booklet provided, not on the question paper. \\
+\tabitem Show all steps and not only the final answer. \\
+\tabitem Numerical answers may be expressed as fractions in lowest terms or decimals correct to four significant digits. }} \\
+	\hline
+\end{tabular}
+\end{table}
+\fi
+
+\ifmemo
+\textcolor{red}{\tick represents one mark; \halftick represents half a mark}
+\fi
+
+\ifnotmemo
+\newpage
+
+\subsection*{Useful Formulas}
+\vspace{-0.5cm}
+\rule{15cm}{0.01cm}
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{2}
+\small \hspace{-2cm}\begin{tabular}{p{9cm} p{0.1cm} p{8cm}}
+$\Pr(a \le X \le b)=\displaystyle\int_{a}^{b} f_X(x) \mathrm{d}x$ && $\Pr(a \le X \le b)=F_X(b)-F_X(a)$\\
+$F_X(x)=\Pr(X \le x)=\displaystyle\int_{-\infty}^{x} f_X(t) \mathrm{d}t$ for $-\infty<x<\infty$ && $f_X(x)=\displaystyle\frac{d F_X(x)}{dx}$\\
+\end{tabular}
+
+\renewcommand{\arraystretch}{1.0}
+\newpage
+\fi
+
+\subsection*{Questions}
+\vspace{-0.5cm}
+\rule{15cm}{0.01cm}
+
+\ifnotmemo\large\fi
+
+\beq
+
+\item \textit{[`r sum(qmarks[[1]])` marks]} Answer the following multiple choice questions (two marks each).
+
+\beq
+
+```{r countryselect}
+library(mapdeck)
+data(capitals)
+
+set.seed(89)
+therow <- sample(1:nrow(capitals), 4, replace = FALSE)
+thecountry <- capitals$country[therow[1]]
+thecapital <- capitals$capital[therow[1]]
+
+othercapitals <- capitals$capital[therow[2:4]]
+
+```
+
+  \item \textit{[`r qmarks[[1]][1]` marks]} What is the capital city of `r thecountry`?
+
+  \beq
+    \item `r thecapital` \ifmemo\textcolor{red}{Correct \tick \tick}\fi
+   \item `r othercapitals[1]`
+  \item `r othercapitals[2]`
+  \item `r othercapitals[3]`
+  \eeq
+
+```{r lakes}
+deeplake <- "Baikal"
+otherlakenames <- c("Tanganyika", "Viedma", "Vostok", "O'Higgins-San Martin", "Malawi", "Issyk Kul", "Great Slave", "Crater", "Matano", "General Carrera-Buenos Aires", "Hornindalsvatnet", "Quesnel", "Sarez", "Toba", "Tahoe", "Argentino", "Salvatnet", "Kivu")
+
+set.seed(321)
+otherlakes <- sample(otherlakenames, 3, replace = FALSE)
+
+answers <- c(deeplake, otherlakes)
+randanswers <- sample(answers)
+correctans <- which(randanswers == deeplake)
+
+memotext <- rep("", 4)
+memotext[correctans] <- "Correct \\tick \\tick"
+
+```
+
+  \item \textit{[`r qmarks[[1]][2]` marks]} What is the deepest lake in the world?
+
+  \beq
+  \item `r randanswers[1]` \ifmemo\textcolor{red}{`r memotext[1]`}\fi
+    \item `r randanswers[2]` \ifmemo\textcolor{red}{`r memotext[2]`}\fi
+  \item `r randanswers[3]` \ifmemo\textcolor{red}{`r memotext[3]`}\fi 
+   \item `r randanswers[4]` \ifmemo\textcolor{red}{`r memotext[4]`}\fi
+  \eeq
+
+```{r addition}
+set.seed(54321)
+numstoadd <- sample(1:15, 2)
+
+correctanswer <- sum(numstoadd)
+wronganswers <- sample(setdiff(2:30, correctanswer), 3)
+
+answers <- c(correctanswer, wronganswers)
+randanswers <- sample(answers)
+correctans <- which(randanswers == correctanswer)
+
+memotext <- rep("", 4)
+memotext[correctans] <- "Correct \\tick \\tick"
+
+```
+
+  \item \textit{[`r qmarks[[1]][3]` marks]} What is $`r numstoadd[1]`+`r numstoadd[2]`$?
+
+  \beq
+  \item `r randanswers[1]` \ifmemo\textcolor{red}{`r memotext[1]`}\fi
+    \item `r randanswers[2]` \ifmemo\textcolor{red}{`r memotext[2]`}\fi
+  \item `r randanswers[3]` \ifmemo\textcolor{red}{`r memotext[3]`}\fi 
+   \item `r randanswers[4]` \ifmemo\textcolor{red}{`r memotext[4]`}\fi
+  \eeq
+
+```{r south}
+caps4 <- capitals[sample(1:nrow(capitals), 4), ]
+correctans <- which.min(caps4$lat)
+answers <- caps4$capital
+correctanswer <- answers[correctans]
+memotext <- rep("", 4)
+memotext[correctans] <- "Correct \\tick \\tick"
+
+```
+
+  \item \textit{[`r qmarks[[1]][4]` marks]} Which of the below capital cities is furthest south?
+
+  \beq
+  \item `r answers[1]` \ifmemo\textcolor{red}{`r memotext[1]`}\fi
+    \item `r answers[2]` \ifmemo\textcolor{red}{`r memotext[2]`}\fi
+  \item `r answers[3]` \ifmemo\textcolor{red}{`r memotext[3]`}\fi 
+   \item `r answers[4]` \ifmemo\textcolor{red}{`r memotext[4]`}\fi
+  \eeq
+
+\eeq
+
+\ifnotmemo \newpage \fi
+
+```{r marks}
+n <- 15
+set.seed(6789)
+marks <- round(rnorm(n, mean = 55, sd = 15))
+```
+
+\item \textit{[`r sum(qmarks[[2]])` marks]} Below are given the final marks of a class of `r words(n)` students.
+
+\begin{table}[h]
+ {\huge\begin{tabular}{`r paste(rep("c", n), collapse = "")`}
+  `r paste(marks, collapse = " & ")`\\
+ \end{tabular}}
+\end{table}
+
+\beq
+
+  \item \textit{[`r qmarks[[2]][1]` marks]} Find the mean of the final marks.
+
+\ifmemo
+\textcolor{red}{\begin{align*}
+  \bar{x} &= \dfrac{1}{n}\displaystyle\sum_{i=1}^{n} x_i \text{ \tick} \\
+  &= \dfrac{1}{`r n`}\left[`r paste(marks, collapse = " + ")`\right] \text{ \tick} \\
+  &= \dfrac{`r sum(marks)`}{`r n`} = `r round2(mean(marks), 4)` \text{ \tick}
+\end{align*}}
+\fi
+
+
+  \item \textit{[`r qmarks[[2]][2]` marks]} Find the median of the final marks.  
+
+```{r median}
+if (n %% 2 == 0) { # even number of values
+  methodtext <- str_c("Then we take the average of the ", n/2, "th and ", (n+1)/2, "th values.")
+} else { # odd number of values
+ methodtext <- str_c("Then we take the ", (n+1)/2, "th value.")
+}
+```
+
+\ifmemo
+ \textcolor{red}{First we put the data in increasing order:
+ \begin{table}[h]
+ \begin{tabular}{`r paste(rep("c", n), collapse = "")`}
+  `r paste(sort(marks), collapse = " & ")`\\
+ \end{tabular} 
+\end{table}
+ \tick \newline
+ `r methodtext` \tick. Hence, the median is `r median(marks)` \tick}
+\fi
+
+  \item \textit{[`r qmarks[[2]][3]` marks]} Find the standard deviation of the final marks.  
+
+\ifmemo
+\textcolor{red}{\begin{align*}
+  s^2 &= \dfrac{1}{n-1}\displaystyle\sum_{i=1}^{n} (x_i-\bar{x})^2 \text{ \tick} \\
+  &= \dfrac{1}{`r n-1`}\left[\left(`r marks[1]`-\frac{`r sum(marks)`}{`r n`}\right)^2 + \left(`r marks[2]`-\frac{`r sum(marks)`}{`r n`}\right)^2 + \cdots + \left(`r marks[n]`-\frac{`r sum(marks)`}{`r n`}\right)^2\right] \text{ \tick} \\
+  s &= \sqrt{`r var(marks)`} \\
+  &= `r round2(sd(marks), 4)` \text{ \tick}
+\end{align*}}
+\fi
+
+  \item \textit{[`r qmarks[[2]][4]` marks]} Draw a histogram of the final marks. Use a bin width of 10.
+  
+```{r hist, include=params$domemo}
+df <- data.frame(Marks = marks)
+ggplot(data = df, mapping = aes(x = Marks)) + 
+  geom_histogram(breaks = seq(20, 90, 10), fill = "cyan", col = "black") + 
+  labs(title = "Histogram of Final Marks")
+```
+
+\ifmemo
+\textcolor{red}{\tick for correctly labelled axes; \tick for correct drawn histogram}
+\fi
+
+\eeq
+
+```{r probquestions, include = FALSE}
+set.seed(1)
+
+  # Use while loop to ensure we don't get 
+  # an ugly fraction in the density function
+  toolargedenom <- TRUE
+  while (toolargedenom) {
+    
+    # Randomly choose support interval of random variable
+    supportmin <- sample(0:3, 1)
+    supportmax <- sample((supportmin + 2):10, 1)
+    support <- c(supportmin, supportmax)
+    
+    # Randomly choose coefficients for function
+    const <- sample(1:9, 2, replace = TRUE)
+
+    # In this case, functional form is deterministic  
+    fpaste <- str_c(const[1], " * x + ", const[2], " * x ^ 2")
+    f <- function(x) eval(parse(text = fpaste))
+
+    # Find constant of integration
+    myint <- integrate(f = f, lower = support[1], 
+                       upper = support[2])$value
+    k <- 1 / myint
+
+    # Convert k to fraction and extract denominator  
+    denom <- as.character(fractions(k, max.denominator = 1e6)) %>% substr(start = regexpr("/", .) + 1, stop = nchar(.))
+    # If denominator has two or fewer digits, accept; otherwise 
+    #  generate another function
+    if (nchar(denom) <= 2) toolargedenom <- FALSE  
+  }
+
+# Initialise symbolic variable x for rSymPy
+Var("x")
+
+# Express support in LaTeX syntax
+supportlatex <- str_c(supportmin, "\\le x \\le ", supportmax)
+
+# Computer numerator of k
+numer <- substr(fractions(k), start = 1, stop = regexpr("/", fractions(k)) - 1)
+
+# Express f in symPy syntax
+fsympy <- str_c("Rational(", numer, ", ", denom, ") * (", 
+                fpaste, ")") %>% 
+  str_replace_all(pattern = "\\^", replacement = "\\*\\*")
+
+# Express f in LaTeX syntax
+flatex <- str_c("latex(", fsympy, ")") %>% 
+  sympynlatex(double = FALSE)
+
+# Express f (non-normalised, without k) in symPy syntax
+fsympynok <- str_replace_all(string = fpaste,
+    pattern = "\\^", replacement = "\\*\\*")
+
+# Express f (non-normalised, without k) in LaTeX syntax
+flatexnok <- sympynlatex(fsympynok, double = FALSE) 
+```
+\item \textit{[`r sum(qmarks[[3]])` marks]} Consider the random variable $X$ with probability density function as follows:
+
+  \[ f_X(x) = \begin{dcases*} k(`r flatexnok`)  & for $`r supportlatex`$ \\ 0 & otherwise  \end{dcases*} \]
+  
+\beq
+  \item \textit{[`r qmarks[[3]][1]` marks]} Find the value of $k$.
+
+```{r findk, echo=FALSE, eval=params$domemo, results='asis'}
+# Find antiderivative of PDF and convert to LaTeX
+  fantider <- str_c("latex(integrate(", fsympynok, ", x))") %>% 
+  sympynlatex(double = FALSE)
+
+# Convert k to latex
+kfrac <- k %>% 
+  fractions %>% 
+  frac2latex(double = FALSE)
+
+# Concatenate full solution as multi-line LaTeX equation
+  cat("\\textcolor{red}{\\begin{align*} k\\displaystyle\\int_{", 
+    support[1], "}^{", support[2], "} f_X(x) \\mathrm{d}x &= 1 \\text{ \\tick} \\\\ k\\displaystyle\\int_{", 
+    support[1], "}^{", support[2], "}", flatexnok, "\\mathrm{d}x &= 1 \\\\
+    k\\left[", fantider, "\\right]_{", support[1], "}^{", support[2], "} &= 1 \\text{ \\tick}\\\\ k\\left(", fractions(myint, max.denominator = 1e6), "\\right)&= 1 \\\\ k= ", kfrac, "&= ", signif(k, 5), " \\text{ \\tick} \\end{align*}}", sep = "")
+```
+
+
+```{r findprob, echo=FALSE, eval=TRUE, include=FALSE}
+set.seed(6543)
+# Generate a random set from which to sample the value for 
+#  the probability expression to be evaluated in this question part
+if (supportmax - supportmin <= 2) {
+  theset <- seq(supportmin, supportmax, length.out = 5)
+  theset <- theset[-c(1, length(theset))]
+} else {
+  theset <- (supportmin + 1):(supportmax - 1)
+}
+# Randomly choose value for event
+probval <- sample(theset, 1)
+probval_tex <- fractions(probval) %>% 
+  frac2latex
+# Randomly choose inequality for event
+ineq <- sample(c("<", ">"), 1)
+
+# Express antiderivative in symPy and assign it to the 
+# symPy variable F
+antider.sympy <- str_c("F = integrate(", fsympy, ", x)") %>% 
+  sympy
+
+# Determine lower and upper bounds of probability integral 
+#  in numeric and LaTeX formats
+a <- if_else(ineq == "<", supportmin, probval)
+b <- if_else(ineq == "<", probval, supportmax)
+a_tex <- if_else(ineq == "<", as.character(supportmin), probval_tex)
+b_tex <- if_else(ineq == "<", probval_tex, as.character(supportmax))
+
+# 
+antidersub1 <- str_c("F.subs(x, ", a, ")") %>% sympy
+antidersub2 <- str_c("F.subs(x, ", b, ")") %>% sympy
+
+antidersub1latex <- frac2dfrac(antidersub1, double = FALSE)
+antidersub2latex <- frac2dfrac(antidersub2, double = FALSE)
+
+myintegral <- str_c("integrate(", fsympy, ", (x, ", a, ", ", b, "))") %>% sympy
+myintegrallatex <- frac2dfrac(myintegral, double = FALSE)
+
+Answer <- eval(parse(text = myintegral))
+if (abs(integrate(f, a, b)$value * k - Answer) > 0.00001) stop("Integral seems incorrect")
+```
+
+
+   \item \textit{[`r qmarks[[3]][2]` marks]} Find \(\mathrm{Pr}(X `r ineq` `r probval`)\).
+
+```{r, echo=FALSE, eval=params$domemo, results='asis'}
+cat("\\textcolor{red}{\\begin{align*}
+      \\mathrm{Pr}\\left(X ", ineq, " ", probval, "\\right) &= \\displaystyle\\int_{", 
+    a_tex, "}^{", b_tex, "}", flatexnok, "\\mathrm{d}x \\text{ \\tick} \\\\ &= \\left[", fantider, "\\right]_{", a_tex, "}^{", b_tex, "}  \\text{ \\tick}\\\\ &= \\left(", antidersub2latex, "\\right) - \\left(", antidersub1latex, "\\right)  \\\\ &= ", myintegrallatex, " = ", signif(Answer, 4), " \\text{ \\tick} \\end{align*}}", sep = "")
+```
+
+  \item \textit{[`r qmarks[[3]][3]` marks]}  Show the probability just calculated on a graph of \(f_X(x)\).
+ 
+\ifmemo
+```{r plot}
+plot_data <- data.frame(
+  x = seq(a, b, by = 1e-3),
+  y = map_dbl(.x = seq(a, b, by = 1e-3),
+              .f = f))
+
+ggplot(data.frame(x = c(supportmin, supportmax)), aes(x = x)) + 
+  geom_ribbon(data = plot_data, aes(ymin = 0, ymax = y), fill = "darkgrey", alpha = 0.75) + 
+    stat_function(fun = f, color = "black", size = 1) + 
+  labs(x = expression(x), y = expression(f[X](x))) + 
+  theme(axis.title.y = element_text(angle = 0)) + 
+  theme_minimal()
+```
+
+\textcolor{red}{\tick for correctly labeled axes, \tick for correctly plotted $f_X(x)$, \tick for correct region shaded}
+\fi
+
+
+\eeq
+
+
+\item \textit{[`r sum(qmarks[[4]])` marks]} Consider the dataset provided in the Excel file `surf4cars_Toyota_Corolla.xlsx`. A description of the columns in the dataset is as follows. Answer the following questions using R code and output only.
+
+```{r echo=FALSE, eval=!params$domemo}
+toyota <- read_excel("surf4cars_Toyota_Corolla.xlsx")
+datadf1 <- data.frame(Variables = names(toyota),
+                     Description = c("Asking Price (Rand)",
+                                     "Vehicle Make and Model",
+                                     "Vehicle Submodel",
+                                     "Year of Manufacture",
+                                     "Mileage (km)",
+                                     "Service History Available",
+                                     "Transmission Type",
+                                     "Engine Size (l)",
+                                     "Body Type",
+                                     "Paint Colour", "Suburb of Seller",
+                                     "Province of Seller", "Vehicle Description", "Surf4Cars Listing ID"))
+```
+
+\beq
+
+```{r setup_lm_question, eval=TRUE, include=FALSE}
+set.seed(76)
+explanat_all <- c("YearModel", "Mileage", "ServiceHistory", "TransmissionType", "EngineSize", "Province")
+explanat <- sample(explanat_all, 2, replace = FALSE)
+
+predvalue <- c(sample(toyota[[explanat[1]]], 1),
+               sample(toyota[[explanat[2]]], 1))
+
+explanat_label <- c(datadf1$Description[datadf1$Variables == explanat[1]], datadf1$Description[datadf1$Variables == explanat[2]])
+
+conf_level <- sample(c(0.9, 0.95, 0.98, 0.99), 1)
+```
+
+  \item \textit{[`r qmarks[[4]][1]` marks]} Fit a linear regression model to the data where Asking Price is the response variable and `r explanat[1]` and `r explanat[2]` are explanatory variables. Display a summary of the model output. 
+
+
+```{r, echo=FALSE, eval=params$domemo, results='asis'}
+# This chunk prints the correct code in the memo, 
+#  but does not run the printed code
+cat("\\texttt{\\textcolor{red}{toyota <- read\\_excel(\"surf4cars\\_Toyota\\_Corolla.xlsx\")\\newline
+mylm <- lm(AskingPrice \\~ ", explanat[1], " + ", explanat[2], ", data = toyota)\\newline
+summary(mylm)}}", sep = "")
+```
+
+```{r, echo=FALSE, eval=params$domemo}
+# This chunk runs code necessary to 
+#  display the correct output in the memo
+toyota <- read_excel("surf4cars_Toyota_Corolla.xlsx")
+theformula <- str_c("AskingPrice ~ ", explanat[1], " + ", explanat[2]) %>% 
+  as.formula
+mylm <- lm(theformula, data = toyota)
+summary(mylm)
+```
+
+
+\ifmemo
+\textcolor{red}{\tick for importing data; \tick for calling \texttt{lm}; \tick for \texttt{formula} and \texttt{data} arguments; \tick for \texttt{summary}}
+\fi
+
+  \item \textit{[`r qmarks[[4]][2]` marks]} Predict the asking price of a Toyota Corolla with a `r explanat_label[1]` value of `r predvalue[1]` and a `r explanat_label[2]` value of `r predvalue[2]`. Include `r 100 * conf_level`\% prediction limits.
+ 
+```{r, echo=FALSE, eval=params$domemo, results='asis'}
+# This chunk prints the correct code in the memo, 
+#  but does not run the printed code
+cat("\\texttt{\\textcolor{red}{newdata <- data.frame(", explanat[1], " = ", predvalue[1], ", ", explanat[2], " = ", predvalue[2], ")\\newline predict(mylm, newdata = newdata,
+       interval = \"prediction\", level = ", conf_level, ")}}", sep = "")
+```
+
+```{r, echo=FALSE, eval=params$domemo}
+# This chunk runs code necessary to 
+#  display the correct output in the memo
+newdata <- data.frame("X1" = predvalue[1],
+                      "X2" = predvalue[2])
+names(newdata) <- explanat
+predict(mylm, newdata = newdata, 
+        interval = "prediction", level = conf_level)
+```
+
+\ifmemo
+\textcolor{red}{\tick for creating new data frame; \tick for calling \texttt{predict}; \tick for \texttt{interval = "prediction"}; \tick for correct level}
+\fi
+
+
+\eeq
+
+
+\eeq

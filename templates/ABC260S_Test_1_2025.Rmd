@@ -1,0 +1,343 @@
+---
+params: 
+  domemo:
+    label: "Is it memo?"
+    value: NA
+  title:
+    label: "Title"
+    value: "The Title"
+  testdate:
+    label: "Assessment Date"
+    value: "my_Date"
+  starttime:
+    label: "Start Time"
+    value: "mytime1"
+  endtime:
+    label: "End Time"
+    value: "mytime2"
+  subjectname:
+    label: "Subject Name"
+    value: "Subject Name"
+  subjectcode:
+    label: "Subject Code"
+    value: "ABC360S"
+  testname:
+    label: "Assessment Name"
+    value: "Assessment"
+  testno:
+    label: "Assessment Nr"
+    value: "0"
+  qualname:
+    label: "Qualification Name"
+    value: "Diploma in ..."
+  qualcode: 
+    label: "Qualification Code"
+    value: "D3ABCD"
+  examiner:
+    label: "Examiner Name"
+    value: "Dr A Jones"
+  intmoderator:
+    label: "Internal Moderator Name"
+    value: "Ms A Smith"
+title: ""
+author: ""
+date: ""
+output: 
+  pdf_document:
+    includes:
+      in_header: "rmdpreamble.tex"
+    number_sections: true
+  fontsize: 11pt
+  geometry: margin=1in
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(readxl)
+library(knitr)
+library(exams)
+library(kableExtra)
+opts_chunk$set(message = FALSE, warning = FALSE, 
+               results = "markup", echo = FALSE)
+
+starttime <- gsub("h", ":", tolower(params$starttime))
+endtime <- gsub("h", ":", tolower(params$endtime))
+
+startt <- as.POSIXct(paste(params$testdate, starttime), format = "%Y-%m-%d %H:%M")
+endt <- as.POSIXct(paste(params$testdate, endtime), format = "%Y-%m-%d %H:%M")
+duration <- as.numeric(difftime(endt, startt, units = "hours"))
+
+# Within each c() are the mark allocations for a particular question
+# So if Question 1 has one part worth 9 marks,
+# and Question 2 has parts a and b worth 4 and 5 marks respectively, 
+# we would have c(9), c(4, 5)
+qmarks <- list(c(2, 2, 2, 2, 2), c(3, 3, 3, 2), c(3, 3, 3),
+               c(4, 3))
+```
+
+```{r, echo=FALSE, include=TRUE, results='asis'}
+if (params$domemo) {
+  cat("\\newif\\ifmemo\n \\memotrue \n\\newif \\ifnotmemo")
+} else {
+  cat("\\newif \\ifmemo\n \\newif\\ifnotmemo\n\\notmemotrue")
+}
+```
+
+\title{\textbf{`r subjectname` (`r subjectcode`) `r testname` `r testno` \ifmemo\textcolor{red}{Memo \the\year}\fi}}
+\date{}
+\maketitle
+
+\thispagestyle{fancy}
+\ifnotmemo
+\begin{table}[h!]
+	\begin{tabular}{|l|p{6cm}|p{2.5cm}|p{3.5cm}|}
+		\hline
+	Qualification Name & `r params$qualname` & Qualification Code & `r params$qualcode` \\
+	\hline
+	Examiner & `r params$examiner` & Date & `r format(params$testdate, "%e %B %Y")` \\
+	\hline
+	Examiner's Department & Mathematics \& Physics & Time & `r params$starttime` -- `r params$endtime`\\
+	\hline
+	Internal Moderator & `r params$intmoderator` & Duration & `r str_to_title(words(duration))` Hours \\
+	\hline
+	Total Pages & \pageref{LastPage} & Total Marks & `r sum(unlist(qmarks))` \\
+	\hline
+	\multicolumn{4}{|l|}{\makecell[l]{Instructions \\ \\
+\tabitem You must answer all questions. You may answer the questions in any order. \\
+\tabitem All answers must be written in the answer booklet provided, not on the question paper. \\
+\tabitem Show all steps and not only the final answer. \\
+\tabitem Numerical answers may be expressed as fractions in lowest terms or decimals correct to four significant digits. }} \\
+	\hline
+\end{tabular}
+\end{table}
+\fi
+
+\ifmemo
+\textcolor{red}{\tick represents one mark; \halftick represents half a mark}
+\fi
+
+\ifnotmemo
+\newpage
+
+\subsection*{Useful Formulas}
+\vspace{-0.5cm}
+\rule{15cm}{0.01cm}
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{2}
+\small \hspace{-2cm}\begin{tabular}{p{9cm} p{0.1cm} p{8cm}}
+$\Pr(a \le X \le b)=\displaystyle\int_{a}^{b} f_X(x) \mathrm{d}x$ && $\Pr(a \le X \le b)=F_X(b)-F_X(a)$\\
+$F_X(x)=\Pr(X \le x)=\displaystyle\int_{-\infty}^{x} f_X(t) \mathrm{d}t$ for $-\infty<x<\infty$ && $f_X(x)=\displaystyle\frac{d F_X(x)}{dx}$\\
+\end{tabular}
+
+\renewcommand{\arraystretch}{1.0}
+\newpage
+\fi
+
+\subsection*{Questions}
+\vspace{-0.5cm}
+\rule{15cm}{0.01cm}
+
+\ifnotmemo\large\fi
+
+\beq
+
+\item \textit{[`r sum(qmarks[[1]])` marks]} Answer the following multiple choice questions (two marks each).
+
+\beq
+
+  \item \textit{[`r qmarks[[1]][1]` marks]} What is the capital city of Morocco?
+
+  \beq
+    \item Rabat \ifmemo\textcolor{red}{Correct \tick \tick}\fi
+   \item Tunis 
+  \item Casablanca
+  \item Los Angeles
+  \eeq
+
+  \item \textit{[`r qmarks[[1]][2]` marks]} What is the deepest lake in the world?
+
+  \beq
+  \item Tanganyika 
+    \item Superior
+  \item Baikal \ifmemo\textcolor{red}{Correct \tick \tick}\fi
+   \item Argentino
+  \eeq
+
+  \item \textit{[`r qmarks[[1]][3]` marks]} What is $3+8$?
+
+  \beq
+    \item $5$
+  \item $11$ \ifmemo\textcolor{red}{Correct \tick \tick}\fi
+  \item $24$
+   \item $38$
+  \eeq
+
+  \item \textit{[`r qmarks[[1]][4]` marks]} Which of the below countries has the largest population?
+
+  \beq
+  \item Mexico    
+  
+  \item Nigeria
+  
+   \item Brazil
+   
+   \item Indonesia \ifmemo\textcolor{red}{Correct \tick \tick}\fi
+  \eeq
+
+  \item \textit{[`r qmarks[[1]][5]` marks]} The most viewed YouTube video of all time is...
+
+  \beq
+  \item Despacito by Luis Fonsi
+    \item Gangnam Style by Psy
+  \item Baby Shark Dance by Pinkfong \ifmemo\textcolor{red}{Correct \tick \tick}\fi 
+   \item See You Again by Wiz Khalifa
+  \eeq
+
+\eeq
+
+\ifnotmemo \newpage \fi
+
+\item \textit{[`r sum(qmarks[[2]])` marks]} Below are given the final marks of a class of twelve students.
+
+\begin{table}[h]
+ {\huge\begin{tabular}{cccccccccccc}
+  47 & 40 & 58 & 45 & 70 & 55 & 54 & 47 & 35 & 47 & 31 & 94\\
+ \end{tabular}}
+\end{table}
+
+\beq
+
+  \item \textit{[`r qmarks[[2]][1]` marks]} Find the mean of the final marks.
+
+\ifmemo
+\textcolor{red}{\begin{align*}
+  \bar{x} &= \dfrac{1}{n}\displaystyle\sum_{i=1}^{n} x_i \text{ \tick} \\
+  &= \dfrac{1}{12}\left[47 + 40 + 58 + 45 + 70 + 55 + 54 + 47 + 35 + 47 + 31 + 94\right] \text{ \tick} \\
+  &= \dfrac{623}{12} = 51.9167 \text{ \tick}
+\end{align*}}
+\fi
+
+
+  \item \textit{[`r qmarks[[2]][2]` marks]} Find the median of the final marks.  
+
+\ifmemo
+ \textcolor{red}{First we put the data in increasing order:
+ \begin{tabular}{cccccccccccc}
+  31 & 35 & 40 & 45 & 47 & 47 & 47 & 54 & 55 & 58 & 70 & 94\\
+ \end{tabular} \tick
+ Then we take the average of the 6th and 7th values \tick. Hence, the median is 
+ $\dfrac{47 + 47}{2}=47$ \tick}
+\fi
+
+  \item \textit{[`r qmarks[[2]][3]` marks]} Find the standard deviation of the final marks.  
+
+\ifmemo
+\textcolor{red}{\begin{align*}
+  s^2 &= \dfrac{1}{n-1}\displaystyle\sum_{i=1}^{n} (x_i-\bar{x})^2 \text{ \tick} \\
+  &= \dfrac{1}{11}\left[\left(47-\frac{623}{12}\right)^2 + \left(40-\frac{623}{12}\right)^2 + \cdots + \left(94-\frac{623}{12}\right)^2\right] \text{ \tick} \\
+  &= 16.8817  \\
+  s &= \sqrt{16.8817} = 4.1087 \text{ \tick}
+\end{align*}}
+\fi
+
+  \item \textit{[`r qmarks[[2]][4]` marks]} Draw a histogram of the final marks. Use a bin width of 10.
+
+```{r hist, include = params$domemo}
+x <- c(47, 40, 58, 45, 70, 55, 54, 47, 35, 47, 31, 94)
+hist(x, main = "Histogram of Final Marks")
+```
+
+\ifmemo
+\textcolor{red}{\tick for correctly labelled axes; \tick for correct drawn histogram}
+\fi
+
+\eeq
+
+
+\item \textit{[`r sum(qmarks[[3]])` marks]} Consider the random variable $X$ with probability density function as follows:
+
+  \[ f_X(x) = \begin{dcases*} k( x ^ 2 +  x )  & for $1 \le x \le 3$ \\ 0 & otherwise  \end{dcases*} \]
+
+ 
+\beq
+  \item \textit{[`r qmarks[[3]][1]` marks]} Find the value of $k$.
+
+\ifmemo
+  \textcolor{red}{\begin{align*} k\displaystyle\int_{-\infty}^{\infty} f_X(x) dx &= 1 \text{ \tick}\\k \displaystyle\int_{1}^{3} x + x^{2} dx &= 1 \\ k \left[\frac{1}{2} x^{2} + \frac{1}{3} x^{3}\right]_{1}^{3} &= 1 \text{ \tick}\\ k \left[\frac{9}{2} + 9 - \left(\frac{1}{2}+\frac{1}{3}\right)\right] &= 1  \\ k &= \dfrac{3}{38} = 0.07895\text{ \tick}\end{align*}}
+\fi
+
+  \item \textit{[`r qmarks[[3]][2]` marks]} Find \(\mathrm{Pr}(X > 2)\).
+ 
+\ifmemo
+  \textcolor{red}{\begin{align*} \mathrm{Pr}(X > 2)&= \displaystyle \int_{2}^{3} f_X(x) dx \text{ \tick} \\ &= k \left[\frac{1}{2} x^{2} + \frac{1}{3} x^{3}\right]_{2}^{3} \text{ \tick} \\ &= k\left[\frac{9}{2} + 9-\left(2 + \frac{8}{3}\right)\right] \\ &= \frac{53}{6} k = \dfrac{53}{76} = 0.6974\text{ \tick} \end{align*}}
+\fi
+
+  \item \textit{[`r qmarks[[3]][3]` marks]}  Show the probability just calculated on a graph of \(f_X(x)\).
+ 
+\ifmemo
+```{r plot}
+fX <- function(x) 3 / 38 * (x + x ^ 2)
+plot.function(fX, from = 1, to = 3, 
+  xlab = expression(x), ylab = expression(f[X](x)), lwd = 1,
+  ylim = c(0, 1))
+polygon(x = c(2, 2, 3, 3, 2),
+        y = c(0, fX(2), fX(3), 0, 0),
+        col = "grey", border = NA) 
+```
+\textcolor{red}{\tick for correctly labeled axes, \tick for correctly plotted $f_X(x)$, \tick for correct region shaded}
+\fi
+
+\eeq
+
+
+\item \textit{[`r sum(qmarks[[4]])` marks]} Consider the dataset provided in the Excel file `surf4cars_Toyota_Corolla.xlsx`. A description of the columns in the dataset is as follows. Answer the following questions using R code and output only.
+
+```{r echo=FALSE, eval=!params$domemo}
+toyota <- read_excel("surf4cars_Toyota_Corolla.xlsx")
+datadf1 <- data.frame(Variables = names(toyota),
+                     Description = c("Asking Price (Rand)",
+                                     "Vehicle Make and Model",
+                                     "Vehicle Submodel",
+                                     "Year of Manufacture",
+                                     "Mileage (km)",
+                                     "Service History Available",
+                                     "Transmission Type",
+                                     "Engine Size (l)",
+                                     "Body Type",
+                                     "Paint Colour", "Suburb of Seller",
+                                     "Province of Seller", "Vehicle Description", "Surf4Cars Listing ID"))
+```
+
+\beq
+  \item \textit{[`r qmarks[[4]][1]` marks]} Fit a linear regression model to the data where Asking Price is the response variable and Year Model, Mileage, and Transmission Type are explanatory variables. Display a summary of the model output. 
+
+```{r, echo=params$domemo, eval=params$domemo}
+toyota <- read_excel("surf4cars_Toyota_Corolla.xlsx")
+mylm <- lm(AskingPrice ~ YearModel + Mileage + TransmissionType, 
+           data = toyota)
+summary(mylm)
+```
+
+\ifmemo
+\textcolor{red}{\tick for importing data; \tick for calling `lm`; \tick for formula and data arguments; \tick for `summary`}
+\fi
+
+  \item \textit{[`r qmarks[[4]][2]` marks]} Predict the asking price of a Toyota Corolla with 2018 year model, 100 000 km driven, and a manual transmission. Include 95\% prediction limits.
+ 
+```{r, echo=params$domemo, eval=params$domemo}
+newdata <- data.frame(YearModel = 2018,
+                      Mileage = 100000,
+                      TransmissionType = "Manual")
+predict(mylm, newdata = newdata, 
+        interval = "prediction")
+```
+\ifmemo
+\textcolor{red}{\tick for creating new data frame; \tick for calling `predict`; \tick for `interval = "prediction"`}
+\fi
+
+
+\eeq
+
+
+\eeq
