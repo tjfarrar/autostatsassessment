@@ -1,11 +1,14 @@
 ---
 title: "Automated setting of statistics assessments using R"
+author:
+  name: "Thomas Farrar"
+  affiliation: "Cape Peninsula University of Technology"
 format:
   revealjs:
     scrollable: true
     toc: true
     toc-depth: 1
-bibliography: references.bib
+bibliography: misc/references.bib
 execute:
   echo: true
   warning: false
@@ -48,9 +51,15 @@ pre[class] {
 }
 ```
 
+## Programme for the Day
+
+- [Link to programme](misc/Workshop_Programme_-_Automation_of_Setting_of_Assessments_using_R-25.11.2025.pdf)
+
 ## Audience Background
 
--   [Mentimeter Slides](https://www.mentimeter.com/app/presentation/alrbofmauaoakh5z36zf1isnr2pxwnyc/edit?question=s33qsd33xjf2) (link will only work for presenter)
+![](images/mentimeter_qr_code.png){height=360}
+
+-   [Presenter Mentimeter Link](https://www.mentimeter.com/app/presentation/alrbofmauaoakh5z36zf1isnr2pxwnyc/edit?question=s33qsd33xjf2)
 
 # Software Setup
 
@@ -153,11 +162,11 @@ tinytex::install_tinytex()
 
 -   In RStudio or Posit Cloud, go to File, New File, R Markdown...
 
-![](../images/lecture05_Rmarkdown01.png){height="80%"}
+![](images/lecture05_Rmarkdown01.png){height=540}
 
 ## Creating an R Markdown file
 
-![](../images/lecture05_Rmarkdown02.png){height="80%"}
+![](images/lecture05_Rmarkdown02.png){height=540}
 
 
 
@@ -165,21 +174,21 @@ tinytex::install_tinytex()
 
 -   In RStudio or Posit Cloud, go to File, New File, Quarto Document *or* Quarto Presentation
 
-![](../images/lecture05_quarto01.png){height="80%"} 
+![](images/lecture05_quarto01.png){height=540} 
 
 
 ## Creating a Quarto file
 
 -   In RStudio or Posit Cloud, go to File, New File, Quarto Document *or* Quarto Presentation
 
-![](../images/lecture05_quarto02.png){height="80%"} 
+![](images/lecture05_quarto02.png){height=540} 
 
 ## Creating a Sweave File
 
 -   In RStudio or Posit Cloud, go to File, New File, R Sweave
 -   You'll get what looks like a blank .tex file, but with extension .Rnw 
 
-![](../images/lecture05_sweave01.png){height="80%"} 
+![](images/lecture05_sweave01.png) 
 
 ## Creating a Sweave File
 
@@ -188,14 +197,14 @@ tinytex::install_tinytex()
     -    Tick 'Use tinytex when compiling .tex files'
     -    **Note:** if weaving using `knitr`, don't use Sweave chunk options
     
-![](../images/lecture05_sweave02.png){height="80%"} 
+![](images/lecture05_sweave02.png){height=540} 
 
 ## Basic Markdown Syntax
 
 -   [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
 -   [Markdown Basics](https://quarto.org/docs/authoring/markdown-basics.html)
 
-![](../images/lecture05_Rmarkdown03.png){height="70%"}
+![](images/lecture05_Rmarkdown03.png){height=640}
 
 
 ## Code Chunks: R Markdown and Quarto
@@ -304,7 +313,7 @@ tinytex::install_tinytex()
 ```{r, echo=TRUE, eval=TRUE, include=TRUE}
 library(tidyverse)
 library(readxl)
-corolla <- read_excel("surf4cars_Toyota_Corolla.xlsx") %>% 
+corolla <- read_excel("misc/surf4cars_Toyota_Corolla.xlsx") %>% 
   filter(YearModel >= 2015)
 ```
 ````
@@ -312,7 +321,7 @@ corolla <- read_excel("surf4cars_Toyota_Corolla.xlsx") %>%
 ```{r, echo=TRUE, eval=TRUE, include=TRUE}
 library(tidyverse)
 library(readxl)
-corolla <- read_excel("surf4cars_Toyota_Corolla.xlsx") %>% 
+corolla <- read_excel("misc/surf4cars_Toyota_Corolla.xlsx") %>% 
   filter(YearModel >= 2015)
 ```
 
@@ -523,27 +532,27 @@ output:
   - A basic descriptive statistics question
   - A basic mathematical statistics question
   - A basic R coding question
-- The source file is [`ABC260S_Test_1_2025.Rmd`](../templates/ABC260S_Test_1_2025.Rmd)
-- The output files are [`ABC260S_Test_1_2025_QP.pdf`](../templates/ABC260S_Test_1_2025_QP.pdf) (question paper) and [`ABC260S_Test_1_2025_Memo.pdf`](../templates/ABC260S_Test_1_2025_Memo.pdf) (memorandum)
+- The source file is [`ABC260S_Test_1_2025.Rmd`](templates/ABC260S_Test_1_2025.Rmd)
+- The output files are [`ABC260S_Test_1_2025_QP.pdf`](templates/ABC260S_Test_1_2025_QP.pdf) (question paper) and [`ABC260S_Test_1_2025_Memo.pdf`](templates/ABC260S_Test_1_2025_Memo.pdf) (memorandum)
 
 ## Sweave Source File
 
 - A .Rnw source file is also provided for those who prefer this format 
-- The source file is [`ABC260S_Test_1_2025.Rnw`](../templates/ABC260S_Test_1_2025.Rnw)
-- And, for the second example discussed below, [`ABC260S_Test_2_2025.Rnw`](../templates/ABC260S_Test_2_2025.Rnw)
+- The source file is [`ABC260S_Test_1_2025.Rnw`](templates/ABC260S_Test_1_2025.Rnw)
+- And, for the second example discussed below, [`ABC260S_Test_2_2025.Rnw`](templates/ABC260S_Test_2_2025.Rnw)
 - The chunk options use `knitr` syntax (meaning they will only work if the files are weaved using `knitr` rather than Sweave)
 
 # Setting and compiling an assessment generating script in R
 
 ## Compiler R Script: R Markdown
 
-- The R script template [`assessment_compiler_Rmd.R`](../templates/assessment_compiler_Rmd.R) contains code to do the following:
+- The R script template [`assessment_compiler_Rmd.R`](templates/assessment_compiler_Rmd.R) contains code to do the following:
 
 1. Load required R packages
 2. Set values of assessment parameters (subject code, assessment date, etc.)
 3. Compile the .Rmd source file twice (once for question paper, once for memo)
 
-- Note: if using .Rnw source files, rather use the [`assessment_compiler_Rnw.R`](../templates/assessment_compiler_Rnw.R) script template
+- Note: if using .Rnw source files, rather use the [`assessment_compiler_Rnw.R`](templates/assessment_compiler_Rnw.R) script template
 - Let us have a look at the template
 
 ## Example 2: ABC260S Test 2
@@ -552,8 +561,8 @@ output:
 - However, the level of automation in the source .Rmd file is higher:
   - Randomisation is incorporated into the setting of the questions
   - Solutions are automatically calculated with steps
-- The source file is [`ABC260S_Test_2_2025.Rmd`](../templates/ABC260S_Test_2_2025.Rmd) (or [`Rnw`](../templates/ABC260S_Test_2_2025.Rnw) version)
-- The output files are [`ABC260S_Test_2_2025_QP.pdf`](../templates/ABC260S_Test_2_2025_QP.pdf) (question paper) and [`ABC260S_Test_2_2025_Memo.pdf`](../templates/ABC260S_Test_2_2025_Memo.pdf) (memorandum)
+- The source file is [`ABC260S_Test_2_2025.Rmd`](templates/ABC260S_Test_2_2025.Rmd) (or [`Rnw`](templates/ABC260S_Test_2_2025.Rnw) version)
+- The output files are [`ABC260S_Test_2_2025_QP.pdf`](templates/ABC260S_Test_2_2025_QP.pdf) (question paper) and [`ABC260S_Test_2_2025_Memo.pdf`](templates/ABC260S_Test_2_2025_Memo.pdf) (memorandum)
   
 ## Example 2
 
@@ -586,7 +595,7 @@ output:
 
 
 <video
-  src="../videos/Stat_Quality_Control_Online_Test_and_Feedback.mp4"
+  src="videos/Stat_Quality_Control_Online_Test_and_Feedback.mp4"
   controls
   preload="metadata">
   Your browser does not support the video tag.
@@ -595,7 +604,7 @@ output:
 ## R Coding Online Assessment
 
 <video
-  src="../videos/Programming_Stats_Online_Test_Student_View.mp4"
+  src="videos/Programming_Stats_Online_Test_Student_View.mp4"
   controls
   preload="metadata">
   Your browser does not support the video tag.
@@ -604,7 +613,7 @@ output:
 ## Mathematical Statistics Online Assessment
 
 <video
-  src="../videos/Math_Stats_Online_Test_and_Feedback.mp4"
+  src="videos/Math_Stats_Online_Test_and_Feedback.mp4"
   controls
   preload="metadata">
   Your browser does not support the video tag.
@@ -648,15 +657,15 @@ output:
 
 - Most LMSs allow single-choice and multi-choice MCQ
 - Let's consider a homemade example of each:
-    - Single-choice: [`capital_cities.Rmd`](../templates/capital_cities.Rmd) or [`capital_cities.Rnw`](../templates/capital_cities.Rnw)
-    - Multi-choice: [`two_numbers.Rmd`](../templates/two_numbers.Rmd) or [`two_numbers.Rnw`](../templates/two_numbers.Rnw)
+    - Single-choice: [`capital_cities.Rmd`](templates/capital_cities.Rmd) or [`capital_cities.Rnw`](templates/capital_cities.Rnw)
+    - Multi-choice: [`two_numbers.Rmd`](templates/two_numbers.Rmd) or [`two_numbers.Rnw`](templates/two_numbers.Rnw)
 
 ## Numerical Answer Exercises
 
 - Like MCQ, auto-marking
 - Marking is all-or-nothing based on whether entered answer is within a specified tolerance of the correct answer
-    - Example 1: [`calculate_gradient.Rmd`](../templates/calculate_gradient.Rmd) or [`calculate_gradient.Rnw`](../templates/calculate_gradient.Rnw)
-    - Example 2: [`calculate_lotto.Rmd`](../templates/calculate_lotto.Rmd) or [`calculate_lotto.Rnw`](../templates/calculate_lotto.Rnw)
+    - Example 1: [`calculate_gradient.Rmd`](templates/calculate_gradient.Rmd) or [`calculate_gradient.Rnw`](templates/calculate_gradient.Rnw)
+    - Example 2: [`calculate_lotto.Rmd`](templates/calculate_lotto.Rmd) or [`calculate_lotto.Rnw`](templates/calculate_lotto.Rnw)
 
 ## Essay (or File Upload) Exercises
 
@@ -669,8 +678,8 @@ output:
 
 ## Essay Exercises: Examples
 
-- Example 1: [`upload_scatterplot.Rmd`](../templates/upload_scatterplot.Rmd) or [`upload_scatterplot.Rnw`](../templates/upload_scatterplot.Rnw)
-    - Example 2: [`upload_expectation.Rmd`](../templates/upload_expectation.Rmd) or [`upload_expectation.Rnw`](../templates/upload_expectation.Rnw)
+- Example 1: [`upload_scatterplot.Rmd`](templates/upload_scatterplot.Rmd) or [`upload_scatterplot.Rnw`](templates/upload_scatterplot.Rnw)
+    - Example 2: [`upload_expectation.Rmd`](templates/upload_expectation.Rmd) or [`upload_expectation.Rnw`](templates/upload_expectation.Rnw)
     - When generating LaTeX code in R character variables in the exercise templates, be aware that an extra backslash is required in Rnw files compared to Rmd files
 
 ## Tips for Exercise Files
@@ -689,7 +698,7 @@ output:
 - Run `exams2html` first to preview your questions in your browser
   - This is not a guarantee that they will look the same in the LMS
 - Run `exams2xyz` to generate a zip file that can be imported into LMS
-- Example: [`generate_test_Rmd.R`](../templates/generate_test_Rmd.R) or [`generate_test_Rnw.R`](../templates/generate_test_Rnw.R)
+- Example: [`generate_test_Rmd.R`](templates/generate_test_Rmd.R) or [`generate_test_Rnw.R`](templates/generate_test_Rnw.R)
 
 
 ## Importing Zip File into LMS
