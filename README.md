@@ -3,11 +3,12 @@
 This repo has been created for a pre-conference workshop offered in conjunction with the 2025 South African Statistical Association Conference.
 
 - The [templates](https://github.com/tjfarrar/autostatsassessment/tree/main/templates) folder contains source and output files useful for automatic generation of paper-based and online statistics assessments.
+- The [slides](https://github.com/tjfarrar/autostatsassessment/tree/main/slides) folder contains source and output files for the workshop slides.
 - The [videos](https://github.com/tjfarrar/autostatsassessment/tree/main/videos) contains screencast demos of some online assessments created in R's [`exams`](https://r-exams.org) package and deployed to Blackboard Ultra  
 
-<h3>Click [here](https://tjfarrar.github.io/autostatsassessment/sasa_assessments_slides.html) to view the slides for the workshop.</h3>
+## [Click to Open Workshop Slides](https://tjfarrar.github.io/autostatsassessment/sasa_assessments_slides.html)
 
-The [.qmd source](https://github.com/tjfarrar/autostatsassessment/tree/main/sasa_assessment_slides.qmd) file for the slides is also accessible. 
+The [qmd source](https://github.com/tjfarrar/autostatsassessment/blob/main/sasa_assessments_slides.qmd) for the slides is also available. 
 
 Here is some R code that attendees are encouraged to run before the workshop to install some useful packages.
 
