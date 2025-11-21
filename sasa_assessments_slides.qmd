@@ -128,7 +128,7 @@ tinytex::install_tinytex()
 
 ## Benefits of Using R Markdown, Sweave, Quarto
 
--   With one click you run your data analysis **and** generate your question paper and memorandum
+-   One-click compilation of R code **and** output document/s (e.g., question paper and memorandum)
 -   If you realise you made a mistake and want to change something, no copying and pasting required
 -   Just fix the mistake and render again
 -   All graphs, output, etc. will be updated instantly
