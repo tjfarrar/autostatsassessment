@@ -235,7 +235,10 @@ Thomas Farrar
 <li><a href="#/r-markdown-quarto-and-sweave" id="/toc-r-markdown-quarto-and-sweave">R Markdown, Quarto, and Sweave</a></li>
 <li><a href="#/setting-an-assessment-template-in-r-markdown-or-sweave" id="/toc-setting-an-assessment-template-in-r-markdown-or-sweave">Setting an Assessment Template in R Markdown or Sweave</a></li>
 <li><a href="#/setting-and-compiling-an-assessment-generating-script-in-r" id="/toc-setting-and-compiling-an-assessment-generating-script-in-r">Setting and compiling an assessment generating script in R</a></li>
-<li><a href="#/auto-generated-randomised-lms-assessments-using-r-exams" id="/toc-auto-generated-randomised-lms-assessments-using-r-exams">Auto-Generated, Randomised LMS Assessments Using R-exams</a></li>
+<li><a href="#/demos-of-lms-assessments-created-in-r" id="/toc-demos-of-lms-assessments-created-in-r">Demos of LMS Assessments Created in R</a></li>
+<li><a href="#/the-r-exams-package" id="/toc-the-r-exams-package">The R <code>exams</code> Package</a></li>
+<li><a href="#/creating-exercise-files-for-r-exams" id="/toc-creating-exercise-files-for-r-exams">Creating Exercise Files for R-exams</a></li>
+<li><a href="#/deploying-the-e-learning-assessment" id="/toc-deploying-the-e-learning-assessment">Deploying the e-Learning Assessment</a></li>
 </ul>
 </nav>
 </section>
@@ -878,11 +881,15 @@ urlcolor: blue
 <li>Auto-calculating mathematics answers is a bit trickier but Python’s <a href="https://www.sympy.org/en/index.html">SymPy</a> symbolic mathematics library can help us</li>
 <li>It is available to R users through the <code>RSymPy</code> R package</li>
 </ul>
-</section></section>
-<section>
-<section id="auto-generated-randomised-lms-assessments-using-r-exams" class="title-slide slide level1 center">
-<h1>Auto-Generated, Randomised LMS Assessments Using R-exams</h1>
+</section>
+<section id="lunch-break" class="slide level2">
+<h2>Lunch Break</h2>
 
+<img data-src="images/17508380069_397719f473_b.jpeg" class="r-stretch"><ul>
+<li>Title: Lion cubs eating meat</li>
+<li>Creator: Tambako the Jaguar</li>
+<li><a href="https://creativecommons.org/licenses/by-nd/2.0/">License Details</a></li>
+</ul>
 </section>
 <section id="aims-for-the-afternoon" class="slide level2">
 <h2>Aims for the Afternoon</h2>
@@ -901,9 +908,14 @@ urlcolor: blue
 <li>The problem is that it is very time-consuming to design questions within the LMS interface (especially if we want to create many different versions of the question)</li>
 <li>What if this could all be automated?</li>
 </ul>
+</section></section>
+<section>
+<section id="demos-of-lms-assessments-created-in-r" class="title-slide slide level1 center">
+<h1>Demos of LMS Assessments Created in R</h1>
+
 </section>
-<section id="some-demos" class="slide level2">
-<h2>Some Demos</h2>
+<section id="demos-of-lms-assessments-created-in-r-1" class="slide level2">
+<h2>Demos of LMS Assessments Created in R</h2>
 <ul>
 <li>Here are three screencast videos showing aspects of assessments I’ve deployed to Blackboard from R-exams</li>
 </ul>
@@ -925,9 +937,14 @@ Your browser does not support the video tag.
 <video src="videos/Math_Stats_Online_Test_and_Feedback.mp4" controls="" preload="metadata">
 Your browser does not support the video tag.
 </video>
+</section></section>
+<section>
+<section id="the-r-exams-package" class="title-slide slide level1 center">
+<h1>The R <code>exams</code> Package</h1>
+
 </section>
-<section id="the-exams-r-package" class="slide level2">
-<h2>The exams R Package</h2>
+<section id="the-r-exams-package-1" class="slide level2">
+<h2>The R <code>exams</code> Package</h2>
 <ul>
 <li>Originally developed for auto-generation of paper-based exams <span class="citation" data-cites="Grun09">(<a href="#/references" role="doc-biblioref" onclick="">Grün and Zeileis 2009</a>)</span></li>
 <li>Subsequently adapted for auto-generation of e-learning exams <span class="citation" data-cites="Zeileis14">(<a href="#/references" role="doc-biblioref" onclick="">Zeileis, Umlauf, and Leisch 2014</a>)</span></li>
@@ -946,9 +963,14 @@ Your browser does not support the video tag.
 <li>Import the zip into the LMS</li>
 <li>Deploy the exercises into an LMS test and adjust settings</li>
 </ol>
+</section></section>
+<section>
+<section id="creating-exercise-files-for-r-exams" class="title-slide slide level1 center">
+<h1>Creating Exercise Files for R-exams</h1>
+
 </section>
-<section id="creating-exercise-files" class="slide level2">
-<h2>Creating Exercise Files</h2>
+<section id="creating-exercise-files-for-r-exams-1" class="slide level2">
+<h2>Creating Exercise Files for R-exams</h2>
 <ul>
 <li>The R <code>exams</code> package comes with a lot of ready-made examples in both R Markdown (.Rmd) and Sweave (.Rnw) formats</li>
 <li>To find them, run <code>.libPaths()</code> in R</li>
@@ -1026,9 +1048,14 @@ Your browser does not support the video tag.
 <li>Use <code>eqnarray</code> environments for multi-line equations</li>
 </ul></li>
 </ul>
+</section></section>
+<section>
+<section id="deploying-the-e-learning-assessment" class="title-slide slide level1 center">
+<h1>Deploying the e-Learning Assessment</h1>
+
 </section>
-<section id="creating-the-r-script-to-generate-the-test" class="slide level2">
-<h2>Creating the R script to generate the test</h2>
+<section id="creating-the-assessment-generating-r-script" class="slide level2">
+<h2>Creating the assessment generating R script</h2>
 <ul>
 <li>Combine the exercise files (.Rnw or .Rmd) in a list object</li>
 <li>Set the parameter for how many versions of the test you want to generate</li>

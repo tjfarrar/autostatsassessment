@@ -571,7 +571,14 @@ output:
 - Auto-calculating mathematics answers is a bit trickier but Python's [SymPy](https://www.sympy.org/en/index.html) symbolic mathematics library can help us
 - It is available to R users through the `RSymPy` R package
 
-# Auto-Generated, Randomised LMS Assessments Using R-exams
+## Lunch Break
+
+![](images/17508380069_397719f473_b.jpeg)
+
+
+- Title: Lion cubs eating meat
+- Creator: Tambako the Jaguar
+- [License Details](https://creativecommons.org/licenses/by-nd/2.0/)
 
 ## Aims for the Afternoon
 
@@ -587,7 +594,9 @@ output:
 - The problem is that it is very time-consuming to design questions within the LMS interface (especially if we want to create many different versions of the question)
 - What if this could all be automated?
 
-## Some Demos
+# Demos of LMS Assessments Created in R
+
+## Demos of LMS Assessments Created in R
 
 - Here are three screencast videos showing aspects of assessments I've deployed to Blackboard from R-exams
 
@@ -619,7 +628,9 @@ output:
   Your browser does not support the video tag.
 </video>
 
-## The exams R Package
+# The R `exams` Package
+
+## The R `exams` Package
 
 - Originally developed for auto-generation of paper-based exams [@Grun09]
 - Subsequently adapted for auto-generation of e-learning exams [@Zeileis14]
@@ -636,7 +647,9 @@ output:
 4. Import the zip into the LMS
 5. Deploy the exercises into an LMS test and adjust settings
 
-## Creating Exercise Files
+# Creating Exercise Files for R-exams
+
+## Creating Exercise Files for R-exams
 
 - The R `exams` package comes with a lot of ready-made examples in both R Markdown (.Rmd) and Sweave (.Rnw) formats
 - To find them, run `.libPaths()` in R
@@ -690,7 +703,9 @@ output:
 - Use very basic LaTeX: no packages (may not be supported by LMSs)
     - Use `eqnarray` environments for multi-line equations
 
-## Creating the R script to generate the test
+# Deploying the e-Learning Assessment
+
+## Creating the assessment generating R script
 
 - Combine the exercise files (.Rnw or .Rmd) in a list object
 - Set the parameter for how many versions of the test you want to generate
