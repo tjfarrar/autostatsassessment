@@ -1,0 +1,54 @@
+% !Rnw weave = Sweave
+
+\begin{document}
+
+<<echo=FALSE, results=hide>>=
+
+library(mapdeck)
+data(capitals)
+
+# Don't set seed here. Set it in the .R file
+
+# Randomly sample 4 rows from the data frame of countries and capitals
+therow <- sample(1:nrow(capitals), 4, replace = FALSE)
+# Select the country from one of the rows to ask about...
+thecountry <- capitals$country[therow[1]]
+# ... and the corresponding capital city (correct answer)
+thecapital <- capitals$capital[therow[1]]
+
+# Make a vector of the correct capital and three other capitals, 
+answers <- c(thecapital, capitals$capital[therow[2:4]])
+
+# Create a logical vector indicating that the first answer is correct
+# Since we are setting shuffle to be true below, it will be randomised 
+#  which answer is correct in the question between a), b), c), d)
+mysolution <- c(TRUE, FALSE, FALSE, FALSE)
+
+correct <- ifelse(mysolution, "Correct", "Incorrect")
+@
+
+\begin{question}
+
+What is the capital city of \Sexpr{thecountry}?
+
+<<echo=FALSE, results=tex>>=
+answerlist(answers, markup = "latex")
+@
+
+\end{question}
+
+\begin{solution}
+The correct answer is: 
+<<echo=FALSE, results=tex>>=
+answerlist(paste0(correct,": ", answers), markup = "latex")
+@
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{schoice}
+%% \exshuffle{TRUE}
+%% \exsolution{\Sexpr{mchoice2string(mysolution)}}
+%% \exname{\Sexpr{paste0("capital_city_schoice_", Sys.Date(), "_Rnw")}}
+%% \expoints{2}
+
+\end{document}

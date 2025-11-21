@@ -1,0 +1,702 @@
+---
+title: "Automated setting of statistics assessments using R"
+format:
+  revealjs:
+    scrollable: true
+    toc: true
+    toc-depth: 1
+bibliography: references.bib
+execute:
+  echo: true
+  warning: false
+  message: false
+monofont: "Courier New"
+monofontoptions: "Scale=0.5"
+urlcolor: blue
+---
+
+```{r setup}
+#| echo: FALSE
+#| include: FALSE
+
+library(knitr)
+library(kableExtra)
+source_rmd <- function(file, local = FALSE, ...){
+  options(knitr.duplicate.label = 'allow')
+
+  tempR <- tempfile(tmpdir = ".", fileext = ".R")
+  on.exit(unlink(tempR))
+  knitr::purl(file, output=tempR, quiet = TRUE)
+
+  envir <- globalenv()
+  source(tempR, local = envir, ...)
+}
+```
+
+
+```{css}
+#| echo: FALSE
+#| eval: FALSE
+
+pre {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+## Audience Background
+
+-   [Mentimeter Slides](https://www.mentimeter.com/app/presentation/alrbofmauaoakh5z36zf1isnr2pxwnyc/edit?question=s33qsd33xjf2) (link will only work for presenter)
+
+# Software Setup
+
+## Installation of R Software, IDE, and Packages
+
+-   Install [R](https://cran.r-project.org/)
+-   Install [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or create a [Posit Cloud](https://posit.cloud/) account
+-   Install the following R packages:
+
+```{r, echo=TRUE, eval=FALSE}
+# Install useful R packages
+install.packages(c("knitr", "tidyverse", "exams", "english", "rmarkdown", 
+                   "rJava", "rjson", "readxl", "kableExtra", "MASS", 
+                   "pracma", "tinytex", "berryFunctions", "rstudioapi",
+                   "devtools", "mapdeck", "tth"), 
+                 dependencies = TRUE)
+
+# rJython (available from CRAN archive)
+install.packages("https://cran.r-project.org/src/contrib/Archive/rJython/rJython_0.0-4.tar.gz")
+# rSymPy (no longer available on CRAN)
+devtools::install_github("FedericoComoglio/rSymPy")
+
+# Install tinytex from tinytex R package
+tinytex::install_tinytex()
+```
+
+## Old-Fashioned Workflow
+
+-   Suppose you want to create a statistics assessment
+-   How would you go about it?
+-   Maybe...
+    -   Find (or generate) a dataset and do some analysis in R
+    -   Type out the question paper in MS Word
+    -   Make a copy of the question paper to serve as the memorandum
+    -   Copy-and-paste plots and output from R into the memo
+    -   Type interpretations and other answers in memo in MS Word
+
+## Problems with Old-Fashioned Workflow
+
+-   Suppose you are almost done setting the assessment
+-   You realise your analysis contains a mistake (or something else not ideal)
+-   You must redo the analysis in R and re-copy everything into Word
+-   Suppose you decide to change a question, or marks allocation
+-   You have to change it manually in both documents (question paper and memo)
+-   Even if you are using LaTeX, much of the same applies
+
+# R Markdown, Quarto, and Sweave
+
+## Introducing R Markdown, Quarto, and Sweave  
+
+-   R Markdown, Quarto, and Sweave are systems in which one can combine code, rich text, and other content in a single source file
+    -   E.g., R code
+-   When you 'render' (compile) the source file, the code runs first
+-   Then an output document is created (e.g., PDF, HTML, MS Word, MS PowerPoint)
+-   Thus, values and output created from the code can be used in the document
+-   For assessment purposes, we are normally interested in PDF output
+
+## Benefits of Using R Markdown, Sweave, Quarto
+
+-   With one click you run your data analysis **and** generate your question paper and memorandum
+-   If you realise you made a mistake and want to change something, no copying and pasting required
+-   Just fix the mistake and render again
+-   All graphs, output, etc. will be updated instantly
+-   By including conditionally executed content in the source file, we can generate the question paper and memo from the same source file with one click
+
+## R Markdown (.Rmd)
+
+-   A file format designed for creating dynamic documents that combine code, text, and output in a single file
+-   Can include code chunks in R or Python
+-   Works within RStudio or Posit Cloud
+-   Allows document output in PDF, HTML, or MS Word format
+-   Allows presentation slide output in PDF, HTML, or MS PowerPoint format
+-   Online books: [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/) or [The R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/)
+
+## Quarto (.qmd)
+
+-   Newer than R Markdown and considered superior by many
+-   The syntax is pretty similar to R Markdown
+-   Bills itself as 'An open-source scientific and technical publishing system'
+    -   See <https://quarto.org>
+-   Has a WYSIWYG interface where you can preview output before rendering the file
+-   Supports more languages than R Markdown
+-   These slides were created in Quarto
+
+## Sweave (.Rnw)
+
+-   An older tool compared to R Markdown and Quarto
+-   Designed for embedding R code within LaTeX documents
+    -   Hence, knowledge of LaTeX programming is needed to use it
+-   Ideal for loyal LaTeX 'purists'
+-   I used it to write my doctoral thesis
+
+## Compatibility with R-exams Package
+
+-   The `exams` package in R (to be explored this afternoon) is compatible with assessment questions created as .Rmd or .Rnw
+-   _Not_ Quarto
+
+
+## Creating an R Markdown file
+
+-   In RStudio or Posit Cloud, go to File, New File, R Markdown...
+
+![](lecture05_Rmarkdown01.png){height="80%"}
+
+## Creating an R Markdown file
+
+![](lecture05_Rmarkdown02.png){height="80%"}
+
+
+
+## Creating a Quarto file
+
+-   In RStudio or Posit Cloud, go to File, New File, Quarto Document *or* Quarto Presentation
+
+![](lecture05_quarto01.png){height="80%"} 
+
+
+## Creating a Quarto file
+
+-   In RStudio or Posit Cloud, go to File, New File, Quarto Document *or* Quarto Presentation
+
+![](lecture05_quarto02.png){height="80%"} 
+
+## Creating a Sweave File
+
+-   In RStudio or Posit Cloud, go to File, New File, R Sweave
+-   You'll get what looks like a blank .tex file, but with extension .Rnw 
+
+![](lecture05_sweave01.png){height="80%"} 
+
+## Creating a Sweave File
+
+-   Recommended: go to Tools, Global Options, Sweave, and change settings:
+    -    Weave Rnw files using `knitr`
+    -    Tick 'Use tinytex when compiling .tex files'
+    -    **Note:** if weaving using `knitr`, don't use Sweave chunk options
+    
+![](lecture05_sweave02.png){height="80%"} 
+
+## Basic Markdown Syntax
+
+-   [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
+-   [Markdown Basics](https://quarto.org/docs/authoring/markdown-basics.html)
+
+![](lecture05_Rmarkdown03.png){height="70%"}
+
+
+## Code Chunks: R Markdown and Quarto
+
+````{verbatim}
+```{r chunklabel}
+# R code goes here
+```
+````
+
+- The 'three backtick' syntax is common to R Markdown and Quarto
+- Labeling the chunk is optional
+- Makes debugging easier
+- Chunk labels cannot be duplicated
+
+## Chunk Languages: R Markdown and Quarto
+
+-   `r` in the chunk header denotes the language of the chunk; many others are supported (e.g., `python`, `sql`)
+-   SAS chunks are supported via the `SASmarkdown` R package
+    - See [documentation](https://sscc.wisc.edu/sscc/pubs/sas/Markdown/index.html)
+    - Requires SAS to be installed on your machine
+
+## Code Chunks: Sweave
+
+````{verbatim}
+<<chunklabel>>=
+# R code goes here
+@
+````
+
+-   One does not specify the language `r` in the chunk header, because Sweave only supports R chunks
+-   One can use `knitr` package rather than classic Sweave to weave .Rnw files (see [here](https://support.posit.co/hc/en-us/articles/200532247-Weaving-Rnw-Files-in-the-RStudio-IDE))
+
+## Chunk Options: R Markdown and Quarto
+
+-    Chunk options can be set globally, using `knitr::opts_chunk$set()`
+-    They can also be set for an individual chunk, in two ways:
+     -    Option 1:
+````{verbatim}
+```{r chunklabel, echo=FALSE, eval=TRUE, warning=FALSE}
+# R code goes here
+```
+````
+
+     -    Option 2:
+````{verbatim}
+```{r chunklabel}
+#| echo: false
+#| eval: true
+#| warning: false
+
+# R code goes here
+```
+````
+
+
+## Available Chunk Options: R Markdown
+
+| Option  | Description |
+|---------|:--------------------------------|
+| eval    | Evaluate the code chunk         |
+| echo    | Include source code in output   |
+| include | Include source code and/or chunk output in output  |
+| results | How to display text results     |
+| warning | Include R warnings in output    |
+| message | Include R messages in output    |
+
+-   There are also many chunk options for controlling the appearance of figures
+-   Full list on [Yihui Xie's website](https://yihui.org/knitr/options/)
+
+
+## Available Chunk Options: Quarto
+
+| Option  | Description |
+|---------|:--------------------------------|
+| eval    | Evaluate the code chunk         |
+| echo    | Include source code in output   |
+| include | Include source code and/or chunk output in output  |
+| output | Include the results of executing the code in the output (`true`, `false`, or `asis` to indicate that the output should be treated as raw markdown) |
+| warning | Include R warnings in output    |
+| message | Include R messages in output    |
+
+- [Full list of Quarto chunk options](https://quarto.org/docs/computations/execution-options.html)
+
+
+
+## Sweave Chunk Options
+
+- Similar to R Markdown, but with different values of the `results` option:
+
+| R Markdown  | Sweave | Description |
+|---------|---------|-----------------------|
+| 'markup' | 'tex' | Render as marked-up text or LaTeX code, according to the output format |
+| 'asis'   | 'verbatim' | Display in the output file verbatim without any special formatting |
+| 'hide'   | 'hide' | Suppress display of results from output file |
+| 'hold'   |  | All text output is collected and placed after all the source code within the chunk |
+
+-   See [Sweave user manual](https://cran.r-project.org/doc/manuals/r-patched/packages/utils/vignettes/Sweave.pdf) (updated Nov 2025)
+
+
+## R Code Chunks: Example (Code Only)
+
+- How the chunk appears in the `.qmd` or .Rmd source file vs. in the output
+
+````{verbatim}
+```{r, echo=TRUE, eval=TRUE, include=TRUE}
+library(tidyverse)
+library(readxl)
+corolla <- read_excel("surf4cars_Toyota_Corolla.xlsx") %>% 
+  filter(YearModel >= 2015)
+```
+````
+
+```{r, echo=TRUE, eval=TRUE, include=TRUE}
+library(tidyverse)
+library(readxl)
+corolla <- read_excel("surf4cars_Toyota_Corolla.xlsx") %>% 
+  filter(YearModel >= 2015)
+```
+
+
+## R Code Chunks: Example (Display Code and Output)
+
+````{verbatim}
+```{r surf4cars, echo=TRUE, eval=TRUE, include=TRUE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice))
+```
+````
+
+```{r surf4cars, echo=TRUE, eval=TRUE, include=TRUE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice))
+```
+
+## R Code Chunks: Example (Display Output Only)
+
+````{verbatim}
+```{r surf4cars2, echo=FALSE, eval=TRUE, include=TRUE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice))
+```
+````
+
+```{r surf4cars2, echo=FALSE, eval=TRUE, include=TRUE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice))
+```
+
+## R Code Chunks: Example (Display Code Only; Don't Run)
+
+````{verbatim}
+```{r surf4cars3, echo=TRUE, eval=FALSE, include=TRUE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice))
+```
+````
+
+```{r surf4cars3, echo=TRUE, eval=FALSE, include=TRUE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice))
+```
+
+## R Code Chunks: Example (Run Code but Display Nothing)
+
+````{verbatim}
+```{r surf4cars4, echo=TRUE, eval=TRUE, include=FALSE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice))
+```
+````
+
+```{r surf4cars4, echo=TRUE, eval=TRUE, include=FALSE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice))
+```
+
+## Including Code and Output Outside Chunks 
+
+- We can put text in code (verbatim) font style by putting the text within a single set of backticks
+- We can run code outside of a chunk by putting the text within a single set of backticks with the letter `r` at the start
+
+## Including Code and Output Outside Chunks: Example 
+
+````{verbatim}
+```{r surf4cars5, echo=TRUE, eval=TRUE, include=FALSE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice)) %>% 
+  filter(TransmissionType == "Automatic") -> myoutput
+mymean <- myoutput$MeanPrice[1]
+library(priceR)
+```
+````
+
+```{r surf4cars5, echo=TRUE, eval=TRUE, include=FALSE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice)) %>% 
+  filter(TransmissionType == "Automatic") -> myoutput
+mymean <- myoutput$MeanPrice[1]
+library(priceR)
+```
+
+````{verbatim}
+- The mean price of a Toyota Corolla with automatic transmission is 
+`r format_currency(mymean, "R") %>% str_replace(",", " ")`.
+````
+- The mean price of a Toyota Corolla with automatic transmission is `r format_currency(mymean, "R") %>% str_replace(",", " ")`.
+
+## Including Plots in the Output
+
+- Provided that `eval` and `include` are set to `TRUE`, plots created by the code will be included in the output file
+- We can use other chunk options such as `out.height` and `out.width` to resize the plot if desired
+
+````{verbatim}
+```{r, echo=FALSE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice)) %>% 
+  ggplot(mapping = aes(x = TransmissionType, y = MeanPrice)) +
+  geom_col(fill = "cyan") + 
+  labs(x = "Transmission Type", y = "Mean Price", 
+       title = "Toyota Corolla Transmission Type vs. Mean Price", 
+       caption = "Source: surf4cars.co.za")
+```
+````
+
+## Including Plots in the Output
+
+```{r, echo=FALSE, eval=TRUE, include=TRUE}
+corolla %>%  
+  group_by(TransmissionType) %>% 
+  summarise(MeanPrice = mean(AskingPrice)) %>% 
+  ggplot(mapping = aes(x = TransmissionType, y = MeanPrice)) +
+  geom_col(fill = "cyan") + 
+  labs(x = "Transmission Type", y = "Mean Price", 
+  title = "Toyota Corolla Transmission Type vs. Mean Price", 
+  caption = "Source: surf4cars.co.za")
+```
+
+
+## Including Mathematical Formulas
+
+- One can easily include mathematical formulas in R Markdown or Quarto reports using basic LaTeX syntax
+````{verbatim}
+- The equation of the simple linear regression model is 
+${y_i = \beta_0 + \beta_1 x_{i} + \epsilon_i}$
+````
+- The equation of the linear regression model is ${y_i = \beta_0 + \beta_1 x_{i} + \epsilon_i}$
+- This is even more seamless in Sweave since the whole source file is structured like a .tex file
+
+## R Markdown and Quarto Headers
+
+- YAML headers containing metadata for the output file (title, author, date, etc.) are placed between two sets of `---`
+- Some of these are automatically generated using the dialog box we saw above
+- The syntax is slightly different for R Markdown vs. Quarto (e.g., `output` vs. `format`)
+- Below is an example from a Quarto file
+
+```
+---
+title: "Generating Reports Using Quarto"
+format:
+  revealjs:
+    default
+  beamer:
+    default
+execute:
+  echo: true
+  warning: false
+  message: false
+monofont: "Courier New"
+monofontoptions: "Scale=0.5"
+urlcolor: blue
+---
+```
+
+## R Markdown and Quarto Headers
+
+- When outputting an R Markdown or Quarto file to PDF, one can use the YAML header to include a .tex file that is prepended to the .tex file generated during compilation
+- This is a useful way to load LaTeX packages or control other LaTeX settings
+- See the following example from an R Markdown YAML header:
+
+````{verbatim}
+output: 
+  pdf_document:
+    includes:
+      in_header: "preamble.tex"
+````
+
+
+# Setting an Assessment Template in R Markdown or Sweave
+
+## R Markdown Source File
+
+- We will now explore how to create an R Markdown source file for your assessment
+- Two templates are provided on the workshop Github page
+- Each template has the following features:
+    - Includes a .tex preamble file with some useful R packages and document settings
+    - Uses parameters from an external script that automatically populate information such as assessment name and number, subject name and code, qualification name and code, examiner name, moderator name, assessment date and time
+    - Automatically calculates and prints total marks per question and for the whole assessment
+    - Uses conditional logic to include only content that should be included for the question paper and memo, respectively
+    - Uses a special symbol (red square) to denote wherever a mark is awarded in the memo
+- The template contains a few 'dummy questions' for illustration purposes
+
+## Exploring the Templates
+
+- We will now spend some time exploring the templates to understand their structure and content
+- We will start with the output files and then look at the source code
+- After that, we will look at the R script that will set the assessment parameters and compile the source file to create the question paper and memorandum
+
+## Example 1: ABC260S Test 1
+
+- Let's exit the presentation and explore our first example
+- It consists of:
+  - A few miscellaneous multiple choice questions
+  - A basic descriptive statistics question
+  - A basic mathematical statistics question
+  - A basic R coding question
+- The source file is [`ABC260S_Test_1_2025.Rmd`](templates/ABC260S_Test_1_2025.Rmd)
+- The output files are [`ABC260S_Test_1_2025_QP.pdf`](templates/ABC260S_Test_1_2025_QP.pdf) (question paper) and [`ABC260S_Test_1_2025_Memo.pdf`](templates/ABC260S_Test_1_2025_Memo.pdf) (memorandum)
+
+## Sweave Source File
+
+- A .Rnw source file is also provided for those who prefer this format 
+- The source file is [`ABC260S_Test_1_2025.Rnw`](templates/ABC260S_Test_1_2025.Rnw)
+- And, for the second example discussed below, [`ABC260S_Test_2_2025.Rnw`](templates/ABC260S_Test_2_2025.Rnw)
+- The chunk options use `knitr` syntax (meaning they will only work if the files are weaved using `knitr` rather than Sweave)
+
+# Setting and compiling an assessment generating script in R
+
+## Compiler R Script: R Markdown
+
+- The R script template [`assessment_compiler_Rmd.R`](templates/assessment_compiler_Rmd.R) contains code to do the following:
+
+1. Load required R packages
+2. Set values of assessment parameters (subject code, assessment date, etc.)
+3. Compile the .Rmd source file twice (once for question paper, once for memo)
+
+- Note: if using .Rnw source files, rather use the [`assessment_compiler_Rnw.R`](templates/assessment_compiler_Rnw.R) script template
+- Let us have a look at the template
+
+## Example 2: ABC260S Test 2
+
+- The output files appear almost identical to those of Example 1
+- However, the level of automation in the source .Rmd file is higher:
+  - Randomisation is incorporated into the setting of the questions
+  - Solutions are automatically calculated with steps
+- The source file is [`ABC260S_Test_2_2025.Rmd`](templates/ABC260S_Test_2_2025.Rmd) (or [`Rnw`](templates/ABC260S_Test_2_2025.Rnw) version)
+- The output files are [`ABC260S_Test_2_2025_QP.pdf`](templates/ABC260S_Test_2_2025_QP.pdf) (question paper) and [`ABC260S_Test_2_2025_Memo.pdf`](templates/ABC260S_Test_2_2025_Memo.pdf) (memorandum)
+  
+## Example 2
+
+- We can use basic randomisation functions in R to introduce some randomisation into multiple choice questions
+- Statistics answers are easy to auto-calculate due to the many built-in statistics functions in R
+- Auto-calculating mathematics answers is a bit trickier but Python's [SymPy](https://www.sympy.org/en/index.html) symbolic mathematics library can help us
+- It is available to R users through the `RSymPy` R package
+
+# Auto-Generated, Randomised LMS Assessments Using R-exams
+
+## Aims for the Afternoon
+
+- Pivot from paper-based assessments to online assessments deployed in an LMS
+- Learn the syntax required to use the `exams` package in R
+- Learn how to set online assessments that include the features covered earlier (e.g., multiple random versions; automated generation of memo)
+- Explore how students experience the assessment (and feedback) in an LMS
+
+## Motivation
+
+- Most LMSs allow users to set many different types of question (e.g., multiple choice; numerical answer; essay)
+- Some LMSs also allow users to create a 'pool' or 'bank' containing multiple versions of a question, with one question randomly drawn from the pool each time a student does an assessment
+- The problem is that it is very time-consuming to design questions within the LMS interface (especially if we want to create many different versions of the question)
+- What if this could all be automated?
+
+## Some Demos
+
+- Here are three screencast videos showing aspects of assessments I've deployed to Blackboard from R-exams
+
+## Statistical Quality Control Online Assessment
+
+
+<video
+  src="videos/Stat_Quality_Control_Online_Test_and_Feedback.mp4"
+  controls
+  preload="metadata">
+  Your browser does not support the video tag.
+</video>
+
+## R Coding Online Assessment
+
+<video
+  src="videos/Programming_Stats_Online_Test_Student_View.mp4"
+  controls
+  preload="metadata">
+  Your browser does not support the video tag.
+</video>
+
+## Mathematical Statistics Online Assessment
+
+<video
+  src="videos/Math_Stats_Online_Test_and_Feedback.mp4"
+  controls
+  preload="metadata">
+  Your browser does not support the video tag.
+</video>
+
+## The exams R Package
+
+- Originally developed for auto-generation of paper-based exams [@Grun09]
+- Subsequently adapted for auto-generation of e-learning exams [@Zeileis14]
+- Has a dedicated website, [r-exams.org](https://r-exams.org/)
+- Has an active community support forum at [R-Forge](https://r-forge.r-project.org/projects/exams/)
+- Stable package version available on CRAN
+- Development version available via `install.packages("exams", repos="http://R-Forge.R-project.org")`
+
+## Workflow to Create an LMS Assessment Using R-exams
+
+1. Create exercise (question) files using R Markdown or Sweave
+2. Compile exercise files into an assessment using `exams2html` for preview purposes
+3. Compile exercise files into a zip for export to LMS using `exams2xyz` function (e.g., `exams2blackboard`, `exams2moodle`, `exams2canvas`, `exams2sakai::exams2sakai`)
+4. Import the zip into the LMS
+5. Deploy the exercises into an LMS test and adjust settings
+
+## Creating Exercise Files
+
+- The R `exams` package comes with a lot of ready-made examples in both R Markdown (.Rmd) and Sweave (.Rnw) formats
+- To find them, run `.libPaths()` in R
+- Navigate to the folder that is listed
+- Open the `exams` folder and the `exercises` subfolder
+- You will find many .Rmd and .Rnw files 
+- Most of the examples are statistics questions
+
+## Structure of Exercise Files
+
+- The exercise .Rmd or .Rnw file is like those we saw this morning
+- However, along with code chunks, it contains three sections:
+    - Question: content the student will be shown when they take the test
+    - Solution: content the student *could* (if you wish) be shown as feedback after taking the test
+    - Meta-information: question settings for LMS
+
+## Multiple Choice Question (MCQ) Exercises
+
+- Most LMSs allow single-choice and multi-choice MCQ
+- Let's consider a homemade example of each:
+    - Single-choice: [`capital_cities.Rmd`](templates/capital_cities.Rmd) or [`capital_cities.Rnw`](templates/capital_cities.Rnw)
+    - Multi-choice: [`two_numbers.Rmd`](templates/two_numbers.Rmd) or [`two_numbers.Rnw`](templates/two_numbers.Rnw)
+
+## Numerical Answer Exercises
+
+- Like MCQ, auto-marking
+- Marking is all-or-nothing based on whether entered answer is within a specified tolerance of the correct answer
+    - Example 1: [`calculate_gradient.Rmd`](templates/calculate_gradient.Rmd) or [`calculate_gradient.Rnw`](templates/calculate_gradient.Rnw)
+    - Example 2: [`calculate_lotto.Rmd`](templates/calculate_lotto.Rmd) or [`calculate_lotto.Rnw`](templates/calculate_lotto.Rnw)
+
+## Essay (or File Upload) Exercises
+
+- Great when you want the student to write a paragraph
+- Or submit code
+- Or upload a plot
+- Or upload a photo of handwritten work (e.g., derivation)
+- Downside: not auto-marking
+- May not be supported in all LMSs
+
+## Essay Exercises: Examples
+
+- Example 1: [`upload_scatterplot.Rmd`](templates/upload_scatterplot.Rmd) or [`upload_scatterplot.Rnw`](templates/upload_scatterplot.Rnw)
+    - Example 2: [`upload_expectation.Rmd`](templates/upload_expectation.Rmd) or [`upload_expectation.Rnw`](templates/upload_expectation.Rnw)
+    - When generating LaTeX code in R character variables in the exercise templates, be aware that an extra backslash is required in Rnw files compared to Rmd files
+
+## Tips for Exercise Files
+
+- Do not set seed in the template; rather set it in the main R script
+    - Otherwise all random versions of exercise will be the same!
+- Use `include_supplement` R function if you want to include a file from your PC in the question (e.g., a data file)
+- Use very basic LaTeX: no packages (may not be supported by LMSs)
+    - Use `eqnarray` environments for multi-line equations
+
+## Creating the R script to generate the test
+
+- Combine the exercise files (.Rnw or .Rmd) in a list object
+- Set the parameter for how many versions of the test you want to generate
+- Set the pseudorandom number generator seed (`set.seed`)
+- Run `exams2html` first to preview your questions in your browser
+  - This is not a guarantee that they will look the same in the LMS
+- Run `exams2xyz` to generate a zip file that can be imported into LMS
+- Example: [`generate_test_Rmd.R`](templates/generate_test_Rmd.R) or [`generate_test_Rnw.R`](templates/generate_test_Rnw.R)
+
+
+## Importing Zip File into LMS
+
+- Instructions will vary by LMS
+- Check that settings from exercise metadata have pulled through to LMS
+- Always test out the test in the LMS before deploying to students (e.g., in Student Preview mode)
+- Or, deploy a practice test (with different seed) and let students be your code testers
+
+## References

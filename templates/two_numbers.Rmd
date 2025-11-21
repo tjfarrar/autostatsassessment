@@ -1,0 +1,49 @@
+```{r, echo=FALSE, include=FALSE}
+
+# Don't set seed here. Set it in the .R file
+
+nums2add <- sample(1:15, 2)
+
+rightsum <- nums2add[1] + nums2add[2]
+rightproduct <- nums2add[1] * nums2add[2]
+
+wrongsum <- sample(setdiff(2:30, rightsum), 1)
+wrongproduct <- sample(setdiff(1:225, rightproduct), 1)
+
+answers <- c(rightsum, rightproduct, wrongsum, wrongproduct)
+
+operation <- c("add", "multiply", "add", "multiply")
+
+# Create a logical vector indicating that the first answer is correct
+# Since we are setting shuffle to be true below, it will be randomised 
+#  which answer is correct in the question between a), b), c), d)
+mysolution <- c(TRUE, TRUE, FALSE, FALSE)
+
+correct <- ifelse(mysolution, "Correct", "Incorrect")
+```
+
+Question
+========
+Which of the following statements are true about the numbers `r nums2add[1]` and `r nums2add[2]`?
+
+```{r, echo=FALSE, results='asis'}
+answerlist(paste0("The two numbers ", operation, " to ", answers), 
+           markup = "markdown")
+```
+
+
+Solution
+========
+The correct answer is: 
+```{r, echo=FALSE, results='asis'}
+answerlist(paste0(correct,": ", "The two numbers ", operation, " to ", answers), markup = "markdown")
+```
+
+
+Meta-information
+================
+extype: mchoice
+exshuffle: TRUE
+exsolution: `r mchoice2string(mysolution)`
+exname: `r paste0("two_numbers_mchoice_", Sys.Date(), "_Rmd")`
+expoints: 2

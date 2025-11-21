@@ -1,0 +1,65 @@
+```{r, echo=FALSE, include=FALSE}
+# Don't set seed here. Set it in the .R file
+N <- sample(45:54, 1)
+n <- sample(5:7, 1)
+prize_level <- 1L:7L
+main_required <- c(n, rep(n - 1, 2), rep(n - 2, 2),
+                   rep(n - 3, 2))
+bonus_required <- c(0, 1, 0, 1, 0, 1, 0)
+prize_event <- c(paste0(words(n), " main balls"),
+                 paste0(words(n - 1), " main balls plus bonus ball"),
+                 paste0(words(n - 1), " main balls without bonus ball"),
+                 paste0(words(n - 2), " main balls plus bonus ball"),
+                 paste0(words(n - 2), " main balls without bonus ball"),
+                 paste0(words(n - 3), " main balls plus bonus ball"),
+                 paste0(words(n - 3), " main balls without bonus ball"))
+
+rprize_level <- sample(prize_level, 1)
+```
+
+Question
+========
+Imagine a lottery game in which `r N` sequentially numbered balls are in a machine, and `r n` main balls are drawn without replacement. A `r ordinal(n + 1)` ball is then also drawn, which is called the bonus ball. A player plays the game by selecting `r words(n)` numbers between 1 and `r N` on a card. The player can win a prize based on how many numbers on her/his card match those that came out of the machine (whether as main balls and/or the bonus ball). The table below describes the top seven prize categories.
+
+```{r, echo=FALSE}
+prizedf <- data.frame(`Prize Level` = prize_level,
+                      `Prize Event` = prize_event)
+kable(x = prizedf, format = "pipe", row.names = FALSE, 
+      col.names = NULL)
+```
+
+Calculate the probability of winning a Level `r rprize_level` prize. Express your answer as $I$ where the probability is '1 in $I$', $I$ being rounded to the nearest integer.
+
+
+Solution
+========
+
+```{r, echo=FALSE, include=FALSE}
+m <- main_required[rprize_level]
+b <- bonus_required[rprize_level]
+prob <- choose(n, m) * choose(N - n, n - m) / choose(N, n) * ((n - m) / (N - n)) ^ b * ((N - 2 * n + m) / (N - n)) ^ (1 - b)
+Ans <- format(1 / prob, digits = 2)
+
+if (is.infinite(Ans) | is.nan(Ans) | is.na(Ans)) stop("Infinite or NaN or NA answer")
+```
+
+Let $M=m$ be the event of having $m$ of one's selected numbers come out on the main balls $(m=0,1,2,\ldots,`r n`)$. Let $B=b$ be the event of having $b$ of one's selected numbers come out on the bonus ball $(b=0,1)$. Then, the probability of winning a Level `r rprize_level` prize can be expressed as,
+
+\begin{eqnarray*}
+  \Pr\left(M=m\cap B=b\right) &=& \Pr\left(M=m\right)\Pr\left(B=b|M=m\right)\\
+  &=& \frac{{n \choose m}{N - n \choose n - m}}{{N \choose n}}\left[\left(\frac{n-m}{N-n}\right)^{b}\left(\frac{N-2n+m}{N-n}\right)^{1-b}\right] \\
+  \Pr\left(M=`r m`\cap B=`r b`\right)\\ &=&
+  \frac{{`r n` \choose `r m`}{`r N - n` \choose `r n - m`}}{{`r N` \choose `r n`}} \left(\frac{`r n` - `r m`}{`r N - n`}\right)^{`r b`}\left(\frac{`r N` - 2(`r n`) + `r m`}{`r N - n`}\right)^{1-`r b`} \\
+  &=& `r sci2latex(prob, double = FALSE)` \\
+  &\approx& \text{1 in `r Ans`}  
+\end{eqnarray*}
+
+Thus the required answer is `r Ans`.
+
+Meta-information
+================
+extype: num
+exsolution: `r Ans`
+exname: `r paste0("calculate_lotto_", Sys.Date(), "_Rmd")`
+extol: 1
+expoints: 3

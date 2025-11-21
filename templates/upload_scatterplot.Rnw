@@ -1,0 +1,93 @@
+% !Rnw weave = Sweave
+
+\usepackage{amssymb}
+
+\begin{document}
+
+<<echo=FALSE, results=hide>>=
+
+# Don't set seed here. Set it in the .R file
+
+serial <- paste0(sample(0:9, 4, TRUE), collapse = "")
+
+n <- 50
+x <- round(rnorm(n, mean = 15, sd = 3), 1)
+gradientsign <- sample(c(-1, 1), 1)
+gradient <- sample(1:5, 1)
+intercept <- sample(1:10, 1)
+y <- round(rnorm(n, mean = intercept + gradientsign * gradient,
+                 sd = 2), 1)
+datadf <- data.frame(y = y, x = x)
+write.csv(datadf, file = paste0("data", serial, ".csv"), row.names = FALSE)
+@
+
+\begin{question}
+
+The \texttt{csv} file linked to below contains a random sample of \Sexpr{n} observations of a dependent variable, $y$, and an independent variable, $x$.
+
+\href{\Sexpr{paste0("data", serial, ".csv")}}{Download Data File}
+
+Create a scatter plot of the data. Save your plot as a JPEG image file and upload it along with the R code that you used to generate it.
+
+\emph{Note to marker: Question Version No. \Sexpr{serial}.}
+
+\end{question}
+
+\begin{solution}
+
+Plot should resemble the following:
+
+<<echo=FALSE>>=
+png(filename = paste0("scatter_", serial, ".png"))
+plot(x, y)
+invisible(dev.off())
+@
+
+\begin{figure}
+ \includegraphics{\Sexpr{paste0("scatter_", serial, ".png")}}
+\end{figure}
+
+Or (using \texttt{ggplot2} package),
+
+<<echo=FALSE>>=
+df <- data.frame(x = x, y = y)
+library(ggplot2)
+png(filename = paste0("scatter_", serial, "_ggplot2.png"))
+ggplot(df, mapping = aes(x = x, y = y)) + 
+  geom_point()
+invisible(dev.off())
+@
+
+
+\begin{figure}
+ \includegraphics{\Sexpr{paste0("scatter_", serial, "_ggplot2.png")}}
+\end{figure}
+
+
+R code to find correct answer:
+
+<<echo=FALSE, eval=TRUE, results=verbatim>>=
+cat("dat <- read.csv(\"", paste0("data", serial, ".csv"), "\") \n
+plot(dat$x, dat$y, xlab = \"x\", ylab = \"y\") \n # OR: \n ggplot(dat, mapping = aes(x = x, y = y)) + \n geom_point()",
+sep = "")
+@
+
+Marking scheme (where $\rule{1.5ex}{1.5ex}$ denotes one mark): $\rule{1.5ex}{1.5ex}$ for importing data; $\rule{1.5ex}{1.5ex}$ for plotting code; $\rule{1.5ex}{1.5ex}$ for correct scatter plot uploaded
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{string}
+%% \exstringtype{essay}
+%% \exsolution{nil}
+%% \exname{\Sexpr{paste0("upload_scatterplot_essay_", Sys.Date(), "_Rnw")}}
+%% \exextra[essay,logical]{TRUE}
+%% \exextra[essay_format,character]{editor}
+%% \exextra[essay_required,logical]{FALSE}
+%% \exextra[essay_fieldlines,numeric]{5}
+%% \exextra[essay_attachments,numeric]{1}
+%% \exextra[essay_attachmentsrequired,logical]{TRUE}
+%% \exmaxchars{1000, 10, 50}
+%% \expoints{3}
+
+\end{document}

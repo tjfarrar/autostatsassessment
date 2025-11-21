@@ -326,8 +326,12 @@ frac2latex <- function(x, double = TRUE) {
   if (regexpr("/", x[1]) == -1) {
     x
   } else {
-    numerator <- substr(x, start = 1, stop = regexpr("/", x) - 1)
-    denominator <- substr(x, start = regexpr("/", x) + 1, stop = nchar(x))
+    numerator <- substr(x, 
+                        start = 1, 
+                        stop = regexpr("/", x) - 1)
+    denominator <- substr(x, 
+                          start = regexpr("/", x) + 1, 
+                          stop = nchar(x))
     if (double) {
       paste0("\\\\frac{", numerator, "}{", denominator, "}")
     } else {
@@ -540,4 +544,21 @@ insert_str <- function(target, insert, index) {
   insert <- insert[order(index)]
   index <- sort(index)
   paste(interleave(split_str_by_index(target, index), insert), collapse="")
+}
+
+sci2latex <- function(x, digits = 4, double = TRUE) {
+  s_notation <- formatC(x, format = "e", digits = digits)
+  
+  parts <- strsplit(s_notation, "e")[[1]]
+  coefficient <- parts[1]
+  exponent <- as.numeric(parts[2])
+  
+  if (exponent == 0) {
+    latex_string <- coefficient
+  } else {
+    latex_string <- paste0(coefficient, 
+        ifelse(double, "\\\\times", "\\times"),
+                           " 10^{", exponent, "}")
+  }
+  latex_string
 }

@@ -1,0 +1,74 @@
+```{r, echo=FALSE, include=FALSE}
+# Don't set seed here. Set it in the .R file
+
+serial <- paste0(sample(0:9, 4, TRUE), collapse = "")
+
+n <- 50
+x <- round(rnorm(n, mean = 15, sd = 3), 1)
+gradientsign <- sample(c(-1, 1), 1)
+gradient <- sample(1:5, 1)
+intercept <- sample(1:10, 1)
+y <- round(rnorm(n, mean = intercept + gradientsign * gradient,
+                 sd = 2), 1)
+
+datadf <- data.frame(y = y, x = x)
+write.csv(datadf, file = paste0("data", serial, ".csv"), row.names = FALSE)
+```
+
+Question
+========
+The `csv` file linked to below contains a random sample of `r n` observations of a dependent variable, $y$, and an independent variable, $x$.
+
+[Download Data File](`r paste0("data", serial, ".csv")`)
+
+Create a scatter plot of the data. Save your plot as a JPEG image file and upload it along with the R code that you used to generate it.
+
+*Note to marker: Question Version No. `r serial`.*
+
+
+Solution
+========
+
+Plot should resemble the following:
+
+```{r, echo=FALSE, fig.cap=""}
+plot(x, y)
+```
+
+Or (using `ggplot2` package),
+
+```{r, echo=FALSE, fig.cap=""}
+df <- data.frame(x = x, y = y)
+library(ggplot2)
+ggplot(df, mapping = aes(x = x, y = y)) + 
+  geom_point()
+```
+
+
+R code to find correct answer:
+
+```
+```{r, echo=FALSE, results='asis'}
+cat("dat <- read.csv(\"", paste0("data", serial, ".csv"), "\") \n
+plot(dat$x, dat$y, xlab = \"x\", ylab = \"y\") \n # OR: \n ggplot(dat, mapping = aes(x = x, y = y)) + \n geom_point()",
+sep = "")
+```
+```
+
+Marking scheme (where $\rule{1.5ex}{1.5ex}$ denotes one mark): $\rule{1.5ex}{1.5ex}$ for importing data; $\rule{1.5ex}{1.5ex}$ for plotting code; $\rule{1.5ex}{1.5ex}$ for correct scatter plot uploaded
+
+
+Meta-information
+================
+extype: string
+exstringtype: essay
+exsolution: nil
+exname: `r paste0("upload_scatterplot_essay_", Sys.Date(), "_Rmd")`
+exextra[essay,logical]: TRUE
+exextra[essay_format,character]: editor
+exextra[essay_required,logical]: FALSE
+exextra[essay_fieldlines,numeric]: 5
+exextra[essay_attachments,numeric]: 1
+exextra[essay_attachmentsrequired,logical]: TRUE
+exmaxchars: 1000, 10, 50
+expoints: 3

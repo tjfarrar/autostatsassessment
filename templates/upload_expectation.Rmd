@@ -1,0 +1,182 @@
+
+```{r, echo=FALSE, include=FALSE}
+# rSymPy package must be loaded
+# mathstatsfunctions.R must have been sourced
+rvtype <- sample(c("discrete", "continuous"), 1)
+Var("x")
+
+if (rvtype == "discrete") {
+  
+  toolargedenom <- TRUE
+  
+  # Loop ensures that we don't get a large, ugly denominator 
+  #  in the constant k
+  while (toolargedenom) {
+
+    # Generate support of the random variable
+    supportmin <- 1
+    supportmax <- sample(3:5, 1)
+    support <- supportmin:supportmax
+
+    # Generate parameters to be used in probability mass function    
+    exponent <- sample(setdiff(-3:3, 0), 1)
+    const <- sample(1:5, 1)
+    
+    f <- function(x) x ^ exponent + const
+    mysum <- sum(vapply(support, f, 0))
+    # Constant of summation
+    k <- 1 / mysum
+      
+    denom <- as.character(fractions(k, max.denominator = 1e6)) %>% substr(start = regexpr("/", .) + 1, stop = nchar(.))
+    if (nchar(denom) <= 3) toolargedenom <- FALSE  
+  }
+
+  # Standardised version of PMF as an R function
+  fstd <- function(x) k * (x ^ exponent + const)
+  # Numerator of k
+  numer <- substr(fractions(k), start = 1, stop = regexpr("/", fractions(k)) - 1)
+  fsympy <- paste0("Rational(", numer, ", ", denom, 
+                   ") * (x ** ", exponent, " + ", const, ")")
+
+    # PMF in LaTeX format 
+  flatex <- fsympy %>% 
+    sympynlatex(double = FALSE)
+  flatexdouble <- fsympy %>% 
+    sympynlatex(double = TRUE)
+
+  # Support of random variable in LaTeX format
+  supportlatex <- paste0("x = ", paste(support, collapse = ", "))
+
+  # Calculate E(X) numerically
+  expval <- sum(vapply(support, function(x) x * fstd(x), 0))
+  
+  # Convert E(X) final answer to LaTeX
+  expvallatex <- fractions(expval, max.denominator = 1e6) %>% 
+    frac2latex(double = FALSE)
+
+} else if (rvtype == "continuous") { 
+  
+  toolargedenom <- TRUE
+
+  # Loop ensures that we don't get a large, ugly denominator 
+  #  in the constant k
+  while (toolargedenom) {
+
+    # Generate support of the random variable
+    supportmin <- sample(0:1, 1)
+    supportmax <- sample((supportmin + 1):5, 1)
+    support <- supportmin:supportmax
+    
+    # Generate parameters to be used in probability density function  
+    exponent <- sample(1:4, 1)
+    const <- sample(1:5, 1)
+
+    f <- function(x) x ^ exponent + const
+    myint <- integrate(f = f, lower = support[1], upper = support[2])$value
+    # Constant of integration
+    k <- 1 / myint
+
+    denom <- as.character(fractions(k, max.denominator = 1e6)) %>% substr(start = regexpr("/", .) + 1, stop = nchar(.))
+    if (nchar(denom) <= 3) toolargedenom <- FALSE  
+  }
+
+    # Standardised version of PDF as an R function    
+    fstd <- function(x) k * (x ^ exponent + const)
+  # Numerator of k
+  numer <- substr(fractions(k), start = 1, stop = regexpr("/", fractions(k)) - 1)
+  fsympy <- paste0("Rational(", numer, ", ", denom, 
+                   ") * (x ** ", exponent, " + ", const, ")")
+
+    # PDF in LaTeX format 
+  flatex <- fsympy %>% 
+    sympynlatex(double = FALSE)
+  flatexdouble <- fsympy %>% 
+    sympynlatex(double = TRUE)
+
+    # Support of random variable in LaTeX format
+    supportlatex <- paste0(support[1], "\\le x \\le ", support[2])
+
+      numerk <- substr(fractions(k), start = 1, stop = regexpr("/", fractions(k)) - 1)
+  denomk <- substr(fractions(k), start = regexpr("/", fractions(k)) + 1, stop = nchar(as.character(fractions(k))))
+  # Put PDF multiplied by x into symPy syntax
+  integrand_sympy <- paste0("Rational(", numerk, ", ", denomk, ") * x * (",
+                   deparse(body(f)), ")") %>% 
+    gsub(pattern = "\\^", replacement = "**") %>% 
+    gsub(pattern = "exponent", replacement = exponent) %>% 
+    gsub(pattern = "const", replacement = const)
+  
+  antider_eval_sympy <- paste0("L1 = integrate(", integrand_sympy, ", x)") %>% sympy
+  antider_latex <- paste0("integrate(", integrand_sympy, ")") %>% 
+    sympynlatex(double = FALSE)
+    
+  # Numerically calculate expectation
+    expval <- integrate(function(x) x * fstd(x), lower = support[1], upper = support[2])$value
+  # Express numerical final answer in LaTeX format
+    expvallatex <- fractions(expval, max.denominator = 1e6) %>% 
+      frac2latex(double = FALSE)
+  
+    AnsHi <- paste0("L1.subs(x, ", support[2], ")") %>% 
+      sympy
+    AnsLo <- paste0("L1.subs(x, ", support[1], ")") %>% 
+      sympy
+    AnsHi_latex <- paste0("L1.subs(x, ", support[2], ")") %>% 
+      sympynlatex(double = FALSE)
+    AnsLo_latex <- paste0("L1.subs(x, ", support[1], ")") %>% 
+      sympynlatex(double = FALSE)
+    Ans <- eval(parse(text = AnsHi)) - eval(parse(text = AnsLo))
+  
+    # Checking for errors  
+    if (!berryFunctions::almost.equal(Ans, expval)) {
+      stop(paste0("Expectation answers do not match: f =", deparse(body(f)), 
+            "; support limits =[", support[1], ", ", support[2], "]; sympy answer: ", 
+            Ans, "; integrate answer: ", expval, "; rvtype =", rvtype))
+    }
+    
+}
+```
+
+Question
+========
+
+ The `r rvtype` random variable $X$ has the following probability `r ifelse(rvtype == "discrete", "mass", "density")` function:
+ 
+ \begin{eqnarray*}
+ f_X(x)&=\begin{cases} `r flatex` \text{ for } `r supportlatex` \\
+ 0 \text{ otherwise}
+ \end{cases}\end{eqnarray*}
+
+Find the expectation of $X$. Do the question by hand, then scan and upload the question as an attachment here. Your name and student number should be visible on the page. Numerical answers should be correct to four significant digits or given as fractions.
+
+ 
+Solution
+========
+
+Marking Scheme: $\rule{1.5ex}{1.5ex}$ indicates awarding of one mark.
+
+```{r, echo=FALSE, results='asis'}
+if (rvtype == "discrete") {
+  cat("\\begin{eqnarray*} \\mathrm{E}(X)&= \\displaystyle\\sum_{x=", 
+    support[1], "}^{", support[length(support)], "} x f_X(x) \\rule{1.5ex}{1.5ex} \\\\ &= ", paste(paste0(support, " f_X(", support, ")"), collapse = " + "), " \\rule{1.5ex}{1.5ex}  \\\\ &= ", expvallatex, " = ", signif(expval, 4), " \\rule{1.5ex}{1.5ex} \\end{eqnarray*}", sep = "")
+
+} else if (rvtype == "continuous") { 
+
+  cat("\\begin{eqnarray*} \\mathrm{E}(X)&= \\displaystyle\\int_{", 
+    support[1], "}^{", support[2], "} x f_X(x) \\mathrm{d}x \\\\ &= \\displaystyle\\int_{", support[1], "}^{", support[2], "} x \\left(", flatex, "\\right) \\rule{1.5ex}{1.5ex} \\mathrm{d}x \\\\ &= \\left[", antider_latex, "\\right]_{", support[1], "}^{", support[2], "} \\rule{1.5ex}{1.5ex} \\\\ &= ", AnsHi_latex, " - ", AnsLo_latex, "  \\\\ &= ",
+expvallatex, " = ", signif(expval, 4), " \\rule{1.5ex}{1.5ex} \\end{eqnarray*}", sep = "")  
+}
+```
+
+Meta-information
+================
+extype: string
+exstringtype: essay
+exsolution: nil
+exname: `r paste0("Expectation_", Sys.Date(), "_Rmd")`
+exextra[essay,logical]: TRUE
+exextra[essay_format,character]: editor
+exextra[essay_required,logical]: FALSE
+exextra[essay_fieldlines,numeric]: 5
+exextra[essay_attachments,numeric]: 1
+exextra[essay_attachmentsrequired,logical]: TRUE
+exmaxchars: 1000, 10, 50
+expoints: 3

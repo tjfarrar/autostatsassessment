@@ -1,0 +1,60 @@
+% !Rnw weave = Sweave
+
+\begin{document}
+
+<<echo=FALSE, results=hide>>=
+
+# Don't set seed here. Set it in the .R file
+
+serial <- paste0(sample(0:9, 4, TRUE), collapse = "")
+
+n <- 50
+x <- round(rnorm(n, mean = 15, sd = 3), 1)
+gradientsign <- sample(c(-1, 1), 1)
+gradient <- sample(1:5, 1)
+intercept <- sample(1:10, 1)
+y <- round(rnorm(n, mean = intercept + gradientsign * gradient,
+                 sd = 2), 1)
+
+mylm <- lm(y ~ x)
+
+correctdigits <- 4
+answer <- round2(unname(mylm$coefficients[2]), digits = correctdigits)
+
+datadf <- data.frame(y = y, x = x)
+write.csv(datadf, file = paste0("data", serial, ".csv"), row.names = FALSE)
+@
+
+\begin{question}
+
+The \texttt{csv} file linked to below contains a random sample of \Sexpr{n} observations of a dependent variable, $y$, and an independent variable, $x$.
+
+Fit a linear regression model to the data and give the gradient of the regression line, correct to \Sexpr{words(correctdigits)} decimal places.
+
+\href{\Sexpr{paste0("data", serial, ".csv")}}{Download Data File}
+
+\emph{Note to marker: Question Version No. \Sexpr{serial}.}
+
+\end{question}
+
+\begin{solution}
+
+The correct answer is \Sexpr{answer}. R code to find correct answer:
+
+<<echo=FALSE, eval=TRUE, results=verbatim>>=
+cat("dat <- read.csv(\"", paste0("data", serial, ".csv"), "\") \n
+mylm <- lm(y ~ x, data = dat) \n 
+coef(mylm)[2]",
+sep = "")
+@
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{num}
+%% \exsolution{\Sexpr{answer}}
+%% \exname{\Sexpr{paste0("calculate_gradient_num_", Sys.Date(), "_Rnw")}}
+%% \extol{0.0002}
+%% \expoints{3}
+
+\end{document}

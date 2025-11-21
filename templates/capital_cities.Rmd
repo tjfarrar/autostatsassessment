@@ -1,0 +1,48 @@
+```{r, echo=FALSE, include=FALSE}
+library(mapdeck)
+data(capitals)
+
+# Don't set seed here. Set it in the .R file
+
+# Randomly sample 4 rows from the data frame of countries and capitals
+therow <- sample(1:nrow(capitals), 4, replace = FALSE)
+# Select the country from one of the rows to ask about...
+thecountry <- capitals$country[therow[1]]
+# ... and the corresponding capital city (correct answer)
+thecapital <- capitals$capital[therow[1]]
+
+# Make a vector of the correct capital and three other capitals
+answers <- c(thecapital, capitals$capital[therow[2:4]])
+
+# Create a logical vector indicating that the first answer is correct
+# Since we are setting shuffle to be true below, it will be randomised 
+#  which answer is correct in the question between a), b), c), d)
+mysolution <- c(TRUE, FALSE, FALSE, FALSE)
+
+correct <- ifelse(mysolution, "Correct", "Incorrect")
+```
+
+Question
+========
+What is the capital city of `r thecountry`?
+
+```{r, echo=FALSE, results='asis'}
+answerlist(answers, markup = "markdown")
+```
+
+
+Solution
+========
+The correct answer is: 
+```{r, echo=FALSE, results='asis'}
+answerlist(paste0(correct,": ", answers), markup = "markdown")
+```
+
+
+Meta-information
+================
+extype: schoice
+exshuffle: TRUE
+exsolution: `r mchoice2string(mysolution)`
+exname: `r paste0("capital_city_schoice_", Sys.Date(), "_Rmd")`
+expoints: 2

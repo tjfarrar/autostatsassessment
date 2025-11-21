@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+<title>Exam 8</title>
+<style type="text/css">
+body{font-family: Arial, Helvetica, Sans;}
+</style>
+<meta charset="utf-8" />
+<script type="text/javascript"   src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script>
+</head>
+
+<body>
+<h2>Exam 8</h2>
+
+<ol>
+<li>
+<h4>Question</h4>
+<p>What is the capital city of Canada?</p>
+<br/>
+<ol type="a">
+<li>
+Amman
+</li>
+<li>
+Tarawa
+</li>
+<li>
+Porto Novo (constitutional) / Cotonou (seat of government)
+</li>
+<li>
+Ottawa
+</li>
+</ol>
+<br/>
+<h4>Solution</h4>
+<p>The correct answer is:</p>
+<br/>
+<ol type="a">
+<li>
+Incorrect: Amman
+</li>
+<li>
+Incorrect: Tarawa
+</li>
+<li>
+Incorrect: Porto Novo (constitutional) / Cotonou (seat of government)
+</li>
+<li>
+Correct: Ottawa
+</li>
+</ol>
+<br/>
+</li>
+<li>
+<h4>Question</h4>
+<p>Which of the following statements are true about the numbers 2 and 9?</p>
+<br/>
+<ol type="a">
+<li>
+The two numbers add to 14
+</li>
+<li>
+The two numbers multiply to 18
+</li>
+<li>
+The two numbers add to 11
+</li>
+<li>
+The two numbers multiply to 186
+</li>
+</ol>
+<br/>
+<h4>Solution</h4>
+<p>The correct answer is:</p>
+<br/>
+<ol type="a">
+<li>
+Incorrect: The two numbers add to 14
+</li>
+<li>
+Correct: The two numbers multiply to 18
+</li>
+<li>
+Correct: The two numbers add to 11
+</li>
+<li>
+Incorrect: The two numbers multiply to 186
+</li>
+</ol>
+<br/>
+</li>
+<li>
+<h4>Question</h4>
+<p>The <code>csv</code> file linked to below contains a random sample of 50 observations of a dependent variable, <span class="math inline">\(y\)</span>, and an independent variable, <span class="math inline">\(x\)</span>.</p>
+<p>Fit a linear regression model to the data and give the gradient of the regression line, correct to four decimal places.</p>
+<p><a href="data:text/csv;base64,InkiLCJ4Ig0KNi41LDE0LjQNCjUuNiwxNC4yDQo1LDE2LjQNCjQuMiwxOA0KNi4xLDIxLjkNCjIuMSwxMS45DQowLjcsMTUuOA0KMC4yLDEyLjINCjYuNiwxNS45DQotMC40LDE3LjQNCjMuNiwxNy43DQoxLjEsMTguNQ0KMy4xLDE2LjgNCjcuMSw5LjcNCjQuNywxNC44DQo0LjIsMTEuOA0KMS4zLDExLjYNCjYuNCwxMi41DQo1LjgsMTYuNA0KMS4zLDE3LjkNCi0wLjksMTYuOA0KMi4yLDIyLjkNCjEuOSwxNS45DQoxLjEsMTIuOA0KNy4xLDE1DQotMC4yLDE1LjENCjMuNSwxMy40DQowLjUsMTguNg0KMC44LDE1LjENCjMuMSwxNS42DQozLjIsMTMuNA0KNC4yLDExLjgNCjYuMywxOS4xDQotMC40LDE3LjcNCjQuMiwxNy44DQoyLjQsMTEuNg0KMi41LDE5LjQNCi0xLjEsMTMuMQ0KMi42LDE3LjMNCjMuOCwxMy4zDQoyLjUsMTYuNw0KMC41LDE1LjUNCjQsMTAuMg0KMy40LDE0LjINCjEuMywxNS42DQowLjQsMjAuOQ0KNS4yLDE1DQoyLjUsNi44DQoyLjYsMTMuOQ0KMC4xLDEzLjcNCg==" download="data9629.csv">Download Data File</a></p>
+<p><em>Note to marker: Question Version No. 9629.</em></p>
+<br/>
+<h4>Solution</h4>
+<p>The correct answer is -0.0677. R code to find correct answer:</p>
+<pre><code>dat &lt;- read.csv(&quot;data9629.csv&quot;) 
+
+mylm &lt;- lm(y ~ x, data = dat) 
+ 
+coef(mylm)[2]</code></pre>
+<br/>
+</li>
+<li>
+<h4>Question</h4>
+<p>Imagine a lottery game in which 48 sequentially numbered balls are in a machine, and 5 main balls are drawn without replacement. A sixth ball is then also drawn, which is called the bonus ball. A player plays the game by selecting five numbers between 1 and 48 on a card. The player can win a prize based on how many numbers on her/his card match those that came out of the machine (whether as main balls and/or the bonus ball). The table below describes the top seven prize categories.</p>
+<pre><code>|   |                                    |
+|--:|:-----------------------------------|
+|  1|five main balls                     |
+|  2|four main balls plus bonus ball     |
+|  3|four main balls without bonus ball  |
+|  4|three main balls plus bonus ball    |
+|  5|three main balls without bonus ball |
+|  6|two main balls plus bonus ball      |
+|  7|two main balls without bonus ball   |</code></pre>
+<p>Calculate the probability of winning a Level 5 prize. Express your answer as <span class="math inline">\(I\)</span> where the probability is ’1 in <span class="math inline">\(I\)</span>’, <span class="math inline">\(I\)</span> being rounded to the nearest integer.</p>
+<br/>
+<h4>Solution</h4>
+<p>Let <span class="math inline">\(M=m\)</span> be the event of having <span class="math inline">\(m\)</span> of one’s selected numbers come out on the main balls <span class="math inline">\((m=0,1,2,\ldots,5)\)</span>. Let <span class="math inline">\(B=b\)</span> be the event of having <span class="math inline">\(b\)</span> of one’s selected numbers come out on the bonus ball <span class="math inline">\((b=0,1)\)</span>. Then, the probability of winning a Level 5 prize can be expressed as,</p>
+<p><span class="math display">\[\begin{aligned}
+  \Pr\left(M=m\cap B=b\right) &amp;=&amp; \Pr\left(M=m\right)\Pr\left(B=b|M=m\right)\\
+  &amp;=&amp; \frac{{n \choose m}{N - n \choose n - m}}{{N \choose n}}\left[\left(\frac{n-m}{N-n}\right)^{b}\left(\frac{N-2n+m}{N-n}\right)^{1-b}\right] \\
+  \\\Pr\left(M=3\cap B=0\right) &amp;=&amp;
+  \frac{{5 \choose 3}{43 \choose 2}}{{48 \choose 5}} \left(\frac{5 - 3}{43}\right)^{0}\left(\frac{48 - 2(5) + 3}{43}\right)^{1-0} \\
+  &amp;=&amp; 5.0283\times 10^{-3} \\
+  &amp;\approx&amp; \text{1 in 199}  
+\end{aligned}\]</span></p>
+<p>Thus the required answer is 199.</p>
+<br/>
+</li>
+<li>
+<h4>Question</h4>
+<p>The <code>csv</code> file linked to below contains a random sample of 50 observations of a dependent variable, <span class="math inline">\(y\)</span>, and an independent variable, <span class="math inline">\(x\)</span>.</p>
+<p><a href="data:text/csv;base64,InkiLCJ4Ig0KLTEuOSwxNC42DQotNS43LDIwLjUNCi0xLjksMTguMQ0KLTEuNCwxNC4yDQotMS40LDEzLjMNCi01LjMsMTguMw0KLTMuMSw0LjQNCi00LDEzDQotMy44LDEzLjINCjEsMTUuMw0KLTAuMiwyMS4xDQotNC41LDExLjMNCjAuNywxOC44DQoxLjgsMTIuOA0KLTEuNiwxMi4yDQowLjEsMTYuMw0KLTEsMTQuMQ0KMi4zLDE1LjgNCi0xLjIsMTguOQ0KLTEuNCwyMS42DQotMS4xLDEzLjMNCjAuOCwxNS4zDQotMy44LDE3LjYNCi00LjIsMTMuMQ0KMC4zLDE4DQotNS44LDE2LjENCi0yLjYsMTIuOQ0KLTUuMywxOC4yDQowLjMsMTYNCi0yLjIsMTEuOQ0KLTMuNCwxNC43DQotMiwxMi42DQotMC44LDE0LjkNCi0zLjMsMTAuMw0KLTAuNiwxNC45DQotNi41LDEwLjcNCjAuMSw5LjYNCi0wLjUsMTEuMQ0KMC40LDE5DQotMi45LDE5LjMNCi0yLjUsMjAuMw0KLTIuNCwxOC40DQotNS44LDE1LjENCi00LDEwLjgNCi0wLjcsMTYuNg0KLTMuMywxMS43DQotMC41LDE0LjgNCi0yLjYsMTguMg0KLTEuNSwxNC44DQotMi43LDE0LjcNCg==" download="data0091.csv">Download Data File</a></p>
+<p>Create a scatter plot of the data. Save your plot as a JPEG image file and upload it along with the R code that you used to generate it.</p>
+<p><em>Note to marker: Question Version No. 0091.</em></p>
+<br/>
+<h4>Solution</h4>
+<p>Plot should resemble the following:</p>
+<div class="float">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAHgCAMAAABKCk6nAAAAY1BMVEUAAAAAADoAAGYAOjoAOpAAZrY6AAA6ADo6AGY6OpA6kNtmAABmADpmAGZmZmZmtv+QOgCQOjqQOmaQtpCQ2/+2ZgC2/7a2///bkDrb25Db/9vb////tmb/25D//7b//9v///+D6K1oAAANpElEQVR4nO3dgXYUxxWE4d8EE0eEiCQQKzGS+v2fMrvCMhgJZnfr1tyeUX05OZxDqXpuq61tJMuIEbtG9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhRfcA4UX3AOFF9wDhhdKNGRgPWOhGFaTY1o0qSLGtG1WQYls3qiDFtm5UQYpt3aiCFNu6UQUptnWjClJs60YVpNjW3bzFLyGtBSm2dbeOMcv+kWJbd+sYs+wfKbZ1t44xy/6RYlt383IHxzqQYls3qiDFtm5UQYpt3aiCFNu6UQUptnWjClJ8cPuGnz6Mcffu1/O74YcUj3H//vrw/6sc8KyQ4seP3I8/f3XAJ37DZqwCKf78EXxw85df8hE8JaT44O7t1fGXm1c54CkhxbZuVEGKbd2oghTbulEFKbZ1++3lswCk2NZtx9j4Bh4hxbZuO8bGN/AIKbZ12zE2voFHSLGt2y93sLp0rAIptnWjClJs60YVpNjWjSpIsa0bVZBiWzeqIMW2blRBim3dqIIU27pRBSm2daMKUmzrRhWk2NaNKkixrRtVkGJbN6ogxbZuVEGKbd2oghTbulEFKbZ1owpSbOtGFaTY1o0qSLGtG1WQYls3qiDFtm5UQYpt3aiCFNu62zTjN8sjxbbuJjEm3DRSbOtuEmPCTSPFtu4mMSbcNFJs625T7uBYHVJs60YVpNjW3aa8RO8bY8JNI8W27iYxJtw0UmzrbhJjwk0jxbbuNtXdwYUrSbGt+8Ixyt59C8soT1G6LxwjB7xrjBzwvuUOjhMhxbZuVEGKbd2oghTbulEFKbZ1owpSbOtGFaTY1o2qT5UW1lAeoXSj6osdC0soT1C6kQPeO0YOeHKnX6LPvmXu4MkxTn0fnP6Wl01xeWzr7gEjB7xrjBzwvol3cNEQUmzrRhWk2NaNKkixrauZ6r8waB5m4eELsa0rofPh32L0DrPw7IXY1pXQ+fBvMXLA1eh8+LcYGz/g2zccvfr1gq5L7uCvHi/FY9y/v3749dPr387uxgqQ4jHu3v36p1/Hwz+ynylzRRGkOB/B00OKD+7ezncHxxdIsa0bVZBiWzeqIMW2bpzn+3+k/d7vnxbbunEWxnff3d/57RNjWzfOwsgB7xojB7xvuYNfLKTY1o0qSLGtG1WQYls3qiDFtm5UQYpt3aiCFNu6XrX/rnruf/ONFNu6VozK4WpXK4cU27pWjBzwibGta8UoPuCZX6SRYlvXy3AHVy5YCim2dTeFMfFmkWJbd1MYE28WKbZ1t+WUl/yue3rhqQuxrbs7jKZ3yMJDF2Jbd3cYOeBdY+SAtyt38L4xJt4sUmzrbgpj4s0ixbbupjAm3ixSbOtuS74WHW2QYls3qiDFtu7UZn5FfgIptnVnxtjS3pBiW3dmjC3tDSm2dWfG2NLekGJbdyZPrtzcwXp3IoxNbwUptnUnwtj0VpBiW3cijJatVN0DC6soD1G6M2m5chlF78CFRZRnKN0Xj5ED3jVGDnjfcgfHSZBiWzeqIMW2blRBim3dmTxzG878xcpvZuP5tzoxtnUnwniylWd+axqMP8/Gs291amzrToSRA67vToSxcMBzvV4zcsBnWriDGXNtNXdwMcbUW0WKbd0NYUy9VaTY1m1x4WU61x38LaTY1u3A2N7My5BiW7cDY3szL0OKbd0OjO3NvAwptnVbzH2ZXggptnWjClJs60YVpNjWjSpIsa0bVZBiWzeqIMW2blRBim3drSj7zMr2KdrCsspTle5GMAq/e7lkoWdXvjw+uH3DTx/GuHv35Ge8L3c3j7H7A75/f334/1UOeJKFnl358vjxI/fjz3s64DPuw/3fwceP4IObv/yymwNmbHf2p5Dig7u3V8dfbl79ccA8UuZqxHhxB3z39uf6pafF2O7sT3Fa/ImHPytXLj2v7b74PIOT4/v3cP2dN7u5On/pWAWnxZ8/233mj8qf5YCnxSnx3dvXv/3wzbZ+wLt6Uf4zpNjWXRdjS9OeBym2ddfF2NK050GKbd11MbY07XmQYlt3ZbmDDUvHKpBiWzeqIMW27gtluCoWFlSep3RfJkb9e21hPeVxSvdlYuSAd42RA963U+/gc77nRIpt3fgRxunv3YW3O3WZ6m78CCMHvGuMHHCBlb9+ec7jcgcXYKy6BdfjFtZUHql0J8DIAfu6E2CctIXKv3q/ZqWn614e27ozOOnoGFUbNV35C4sqz1S6m8GYfKNIsa27GYzJN4oU27rbMfs3gyDFtm5UQYpt3aiCFNu6UQUptnXjkXrHL7SVxZVu/I4hviMXysraSjd+x8gB7xojB7xvuYPjh5BiWzeqIMWnd2f/it5uIcUndxHXikshxSd3EdeKSyHFJ3cR14pLIcWnd3MHN0GKbd2oghTbulEFKbZ1S/34etj55YEU27qVGD+a5cfp9iHFtm4lRg740tjWrcTIAV8a27qlrHfw7Fc4UmzrbgZj8o0ixbbuZjAm3yhSbOtuBmPyjSLFtu525A6OVkixrRtVkGJbN6ogxbZuVEGKbd2oghTbulEFKbZ1owpSbOtGFaTY1o0qSLGtOw/rV6pW+DLYwgOU5yvdaTCMG7Eu/tUzLo9t3WkwcsCO7jQYOWBHdx65gy3dqIIUP7r95ZmfHH1iN6yQ4uPPjuazV0+OeLEbK0CKx/GED0e7mY/g8y692b9b4xRI8YO7t6//u5EDZpwz1nlvPSmk+He3b75+gebRpTP5MHLAZ8W2rgkjB3xWbOu65A4+L350c3V5N6yQ4kc54GkhxY92e8Dbf5FGim3dSTA2vw2k2NadBGPz20CKbd1JMDa/DaTY1p1F7mBTN6ogxbZuVEGKbd2oghTbulEFKbZ1owpSbOtGFaTY1vXb/idAp0GKbV07xuQDVkGKbV07xuQDVkGKbV07xuQDVkGKbV2/3MGnxLZuVEGKbd2oghTbulEFKbZ1owpSbOtGFaTY1o0qSLGtG1WQYls3qiDFtm5UQYpt3aiCFNu6UQUptnWjClJs60YVpNjWjSpIsa0bVZBiWzeqIMW2blRBim3dqIIU27pRBSm2daMKUmzrRhWk2NaNKkixrRtVkGJbN6ogxbbuC2T6+1sXllSeqHRfHn7/X/26Smzrvjw54J3LAe9d7uC4BFJs60YVpNjWjSpIsa0bVZBiWzeqIMW2blRBim3dqIIU27pRBSm2daMKUmzrRhWk2NaNZad9ZXPhbU5ZwtGNRYyT3sULb3LCCpZuLGLkgHeNkQNe07M3ovUvxMwdvCbGMxt+9jdXtvD8hdjW3RxGDnjXGDngfVv/Dj7NwgAL8cHtm+v79/D6twu64YcUj3H//np8vD6c89+enPBiN1aAFI9x9+7X+39+ePj17G6sACk+OHz4froa49PPF3TDDyk++vjwDb1fnS+PhLGiClJs60YVpNjWjSpI8aObq8u7YYUUP8oBTwspfpQDnhZSbOtGFaTY1o0qSLGtG1WQYls3qiDFtm5UQYpt3aiCFNu6UQUptnWjClJs60YVpNjWjSpIsa3r8RL/HTVSbOtaMCYcyg0ptnUtGBMO5YYU27oWjAmHckOKbV2P3MHnxrZuVEGKbd2oghTbulEFKbZ1owpSbOtGFaTY1o0qSLGtG1WQYls3qiDFtm5UQYpt3aiCFP+4GzPwHfD6y+ZB3cuZl82DupczL5sHdS9nXjYP6l7OvGwe1L2cedk8qHs587J5UPdyMRu6BwgvugcIL7oHCC+6BwgvugcIL7oHCC+6BwgvugcIL7oHCC8Ma94Ar578AIB6t78cHnL39rmfF2J4kH9Xt2/gunpHlK30xfFneKzg0/H9ffyZITdPf9pA/YP8u7r7+4dx+9cPxTuibKU/PPwMD7+PP/378IF1/FkhDx9g7gf5d/XwUzE+XhfviKqFvji8xDy81Ngd3w3Hn/Zz/Eff/qB1dnXYSvGOqFroi8PLzDofxcf3+6fXKx3wKru6f39VvSOqFvrGGvfwqh/BD8y7unt7Nap3RNVC31jrgFe4g1c74Ns3x+Xnv4OPrzH3/1rp06Tji5r7T9F/3AXeXX0+3+odUbbSF4fPGH9a4w/Sq38e7N3VzcN/p3C9gc+DYyJ0DxBedA8QXnQPEF50DxBedA8QXnQPEF50DxBedA8QXnQPEF50DxBedA8QXnQPEF50DxBedA8QXnQPEF50DxBedA8QXnQPEF50DxBedA8QXnQPEF50D9Do4wrfUt2O7gEa3b37z7sVvj+/F90DdLrhqnsEO7oH6HT8Lwb3ju4BOn38x+6v4Bd9wLd/+986fxlBJ7oH6HP8yzA+2f/DtW50DxBedA8QXnQPEF50DxBedA8QXnQPEF50DxBedA8QXnQPEF50DxBedA8QXnQPEF50DxBedA8QXnQPEF50DxBedA8QXnQPEF7/B9t2W6WdPAGxAAAAAElFTkSuQmCC" />
+</div>
+<p>Or (using <code>ggplot2</code> package),</p>
+<div class="float">
+<img src="data:image/png;base64,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" />
+</div>
+<p>R code to find correct answer:</p>
+<pre><code>dat &lt;- read.csv(&quot;data0091.csv&quot;) 
+
+plot(dat$x, dat$y, xlab = &quot;x&quot;, ylab = &quot;y&quot;) 
+ # OR: 
+ ggplot(dat, mapping = aes(x = x, y = y)) + 
+ geom_point()</code></pre>
+<p>Marking scheme (where <span class="math inline">\(\rule{1.5ex}{1.5ex}\)</span> denotes one mark): <span class="math inline">\(\rule{1.5ex}{1.5ex}\)</span> for importing data; <span class="math inline">\(\rule{1.5ex}{1.5ex}\)</span> for plotting code; <span class="math inline">\(\rule{1.5ex}{1.5ex}\)</span> for correct scatter plot uploaded</p>
+<br/>
+</li>
+<li>
+<h4>Question</h4>
+<p>The discrete random variable <span class="math inline">\(X\)</span> has the following probability mass function:</p>
+<p><span class="math display">\[\begin{aligned}
+ f_X(x)&amp;=\begin{cases} \frac{1}{21} + \frac{1}{42} x^{3} \text{ for } x = 1, 2, 3 \\
+ 0 \text{ otherwise}
+ \end{cases}
+\end{aligned}\]</span></p>
+<p>Find the expectation of <span class="math inline">\(X\)</span>. Do the question by hand, then scan and upload the question as an attachment here. Your name and student number should be visible on the page. Numerical answers should be correct to four significant digits or given as fractions.</p>
+<br/>
+<h4>Solution</h4>
+<p>Marking Scheme: <span class="math inline">\(\rule{1.5ex}{1.5ex}\)</span> indicates awarding of one mark.</p>
+<p><span class="math display">\[\begin{aligned}
+ \mathrm{E}(X)&amp;= \displaystyle\sum_{x=1}^{3} x f_X(x) \rule{1.5ex}{1.5ex} \\ &amp;= 1 f_X(1) + 2 f_X(2) + 3 f_X(3) \rule{1.5ex}{1.5ex}  \\ &amp;= \frac{55}{21} = 2.619 \rule{1.5ex}{1.5ex} 
+\end{aligned}\]</span></p>
+<br/>
+</li>
+</ol>
+
+</body>
+</html>

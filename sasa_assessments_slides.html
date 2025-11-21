@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="sasa_assessments_slides_files/libs/clipboard/clipboard.min.js"></script>
+<script src="sasa_assessments_slides_files/libs/quarto-html/tabby.min.js"></script>
+<script src="sasa_assessments_slides_files/libs/quarto-html/popper.min.js"></script>
+<script src="sasa_assessments_slides_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="sasa_assessments_slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="sasa_assessments_slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="sasa_assessments_slides_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.32">
+
+  <title>Automated setting of statistics assessments using R</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="sasa_assessments_slides_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="sasa_assessments_slides_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="sasa_assessments_slides_files/libs/revealjs/dist/theme/quarto-5ab18e7b177dcbb2357c6d9489f1f13f.css">
+  <link href="sasa_assessments_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="sasa_assessments_slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="sasa_assessments_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="sasa_assessments_slides_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Automated setting of statistics assessments using R</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section><section id="TOC">
+<nav role="doc-toc"> 
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a href="#/software-setup" id="/toc-software-setup">Software Setup</a></li>
+<li><a href="#/r-markdown-quarto-and-sweave" id="/toc-r-markdown-quarto-and-sweave">R Markdown, Quarto, and Sweave</a></li>
+<li><a href="#/setting-an-assessment-template-in-r-markdown-or-sweave" id="/toc-setting-an-assessment-template-in-r-markdown-or-sweave">Setting an Assessment Template in R Markdown or Sweave</a></li>
+<li><a href="#/setting-and-compiling-an-assessment-generating-script-in-r" id="/toc-setting-and-compiling-an-assessment-generating-script-in-r">Setting and compiling an assessment generating script in R</a></li>
+<li><a href="#/auto-generated-randomised-lms-assessments-using-r-exams" id="/toc-auto-generated-randomised-lms-assessments-using-r-exams">Auto-Generated, Randomised LMS Assessments Using R-exams</a></li>
+</ul>
+</nav>
+</section>
+<section id="audience-background" class="slide level2">
+<h2>Audience Background</h2>
+<ul>
+<li><a href="https://www.mentimeter.com/app/presentation/alrbofmauaoakh5z36zf1isnr2pxwnyc/edit?question=s33qsd33xjf2">Mentimeter Slides</a> (link will only work for presenter)</li>
+</ul>
+</section>
+<section>
+<section id="software-setup" class="title-slide slide level1 center">
+<h1>Software Setup</h1>
+
+</section>
+<section id="installation-of-r-software-ide-and-packages" class="slide level2">
+<h2>Installation of R Software, IDE, and Packages</h2>
+<ul>
+<li>Install <a href="https://cran.r-project.org/">R</a></li>
+<li>Install <a href="https://posit.co/download/rstudio-desktop/">RStudio Desktop</a> or create a <a href="https://posit.cloud/">Posit Cloud</a> account</li>
+<li>Install the following R packages:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># Install useful R packages</span></span>
+<span id="cb1-2"><a href=""></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"knitr"</span>, <span class="st">"tidyverse"</span>, <span class="st">"exams"</span>, <span class="st">"english"</span>, <span class="st">"rmarkdown"</span>, </span>
+<span id="cb1-3"><a href=""></a>                   <span class="st">"rJava"</span>, <span class="st">"rjson"</span>, <span class="st">"readxl"</span>, <span class="st">"kableExtra"</span>, <span class="st">"MASS"</span>, </span>
+<span id="cb1-4"><a href=""></a>                   <span class="st">"pracma"</span>, <span class="st">"tinytex"</span>, <span class="st">"berryFunctions"</span>, <span class="st">"rstudioapi"</span>,</span>
+<span id="cb1-5"><a href=""></a>                   <span class="st">"devtools"</span>, <span class="st">"mapdeck"</span>, <span class="st">"tth"</span>), </span>
+<span id="cb1-6"><a href=""></a>                 <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-7"><a href=""></a></span>
+<span id="cb1-8"><a href=""></a><span class="co"># rJython (available from CRAN archive)</span></span>
+<span id="cb1-9"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"https://cran.r-project.org/src/contrib/Archive/rJython/rJython_0.0-4.tar.gz"</span>)</span>
+<span id="cb1-10"><a href=""></a><span class="co"># rSymPy (no longer available on CRAN)</span></span>
+<span id="cb1-11"><a href=""></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"FedericoComoglio/rSymPy"</span>)</span>
+<span id="cb1-12"><a href=""></a></span>
+<span id="cb1-13"><a href=""></a><span class="co"># Install tinytex from tinytex R package</span></span>
+<span id="cb1-14"><a href=""></a>tinytex<span class="sc">::</span><span class="fu">install_tinytex</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="old-fashioned-workflow" class="slide level2">
+<h2>Old-Fashioned Workflow</h2>
+<ul>
+<li>Suppose you want to create a statistics assessment</li>
+<li>How would you go about it?</li>
+<li>Maybe…
+<ul>
+<li>Find (or generate) a dataset and do some analysis in R</li>
+<li>Type out the question paper in MS Word</li>
+<li>Make a copy of the question paper to serve as the memorandum</li>
+<li>Copy-and-paste plots and output from R into the memo</li>
+<li>Type interpretations and other answers in memo in MS Word</li>
+</ul></li>
+</ul>
+</section>
+<section id="problems-with-old-fashioned-workflow" class="slide level2">
+<h2>Problems with Old-Fashioned Workflow</h2>
+<ul>
+<li>Suppose you are almost done setting the assessment</li>
+<li>You realise your analysis contains a mistake (or something else not ideal)</li>
+<li>You must redo the analysis in R and re-copy everything into Word</li>
+<li>Suppose you decide to change a question, or marks allocation</li>
+<li>You have to change it manually in both documents (question paper and memo)</li>
+<li>Even if you are using LaTeX, much of the same applies</li>
+</ul>
+</section></section>
+<section>
+<section id="r-markdown-quarto-and-sweave" class="title-slide slide level1 center">
+<h1>R Markdown, Quarto, and Sweave</h1>
+
+</section>
+<section id="introducing-r-markdown-quarto-and-sweave" class="slide level2">
+<h2>Introducing R Markdown, Quarto, and Sweave</h2>
+<ul>
+<li>R Markdown, Quarto, and Sweave are systems in which one can combine code, rich text, and other content in a single source file
+<ul>
+<li>E.g., R code</li>
+</ul></li>
+<li>When you ‘render’ (compile) the source file, the code runs first</li>
+<li>Then an output document is created (e.g., PDF, HTML, MS Word, MS PowerPoint)</li>
+<li>Thus, values and output created from the code can be used in the document</li>
+<li>For assessment purposes, we are normally interested in PDF output</li>
+</ul>
+</section>
+<section id="benefits-of-using-r-markdown-sweave-quarto" class="slide level2">
+<h2>Benefits of Using R Markdown, Sweave, Quarto</h2>
+<ul>
+<li>With one click you run your data analysis <strong>and</strong> generate your question paper and memorandum</li>
+<li>If you realise you made a mistake and want to change something, no copying and pasting required</li>
+<li>Just fix the mistake and render again</li>
+<li>All graphs, output, etc. will be updated instantly</li>
+<li>By including conditionally executed content in the source file, we can generate the question paper and memo from the same source file with one click</li>
+</ul>
+</section>
+<section id="r-markdown-.rmd" class="slide level2">
+<h2>R Markdown (.Rmd)</h2>
+<ul>
+<li>A file format designed for creating dynamic documents that combine code, text, and output in a single file</li>
+<li>Can include code chunks in R or Python</li>
+<li>Works within RStudio or Posit Cloud</li>
+<li>Allows document output in PDF, HTML, or MS Word format</li>
+<li>Allows presentation slide output in PDF, HTML, or MS PowerPoint format</li>
+<li>Online books: <a href="https://bookdown.org/yihui/rmarkdown/">R Markdown: The Definitive Guide</a> or <a href="https://bookdown.org/yihui/rmarkdown-cookbook/">The R Markdown Cookbook</a></li>
+</ul>
+</section>
+<section id="quarto-.qmd" class="slide level2">
+<h2>Quarto (.qmd)</h2>
+<ul>
+<li>Newer than R Markdown and considered superior by many</li>
+<li>The syntax is pretty similar to R Markdown</li>
+<li>Bills itself as ‘An open-source scientific and technical publishing system’
+<ul>
+<li>See <a href="https://quarto.org" class="uri">https://quarto.org</a></li>
+</ul></li>
+<li>Has a WYSIWYG interface where you can preview output before rendering the file</li>
+<li>Supports more languages than R Markdown</li>
+<li>These slides were created in Quarto</li>
+</ul>
+</section>
+<section id="sweave-.rnw" class="slide level2">
+<h2>Sweave (.Rnw)</h2>
+<ul>
+<li>An older tool compared to R Markdown and Quarto</li>
+<li>Designed for embedding R code within LaTeX documents
+<ul>
+<li>Hence, knowledge of LaTeX programming is needed to use it</li>
+</ul></li>
+<li>Ideal for loyal LaTeX ‘purists’</li>
+<li>I used it to write my doctoral thesis</li>
+</ul>
+</section>
+<section id="compatibility-with-r-exams-package" class="slide level2">
+<h2>Compatibility with R-exams Package</h2>
+<ul>
+<li>The <code>exams</code> package in R (to be explored this afternoon) is compatible with assessment questions created as .Rmd or .Rnw</li>
+<li><em>Not</em> Quarto</li>
+</ul>
+</section>
+<section id="creating-an-r-markdown-file" class="slide level2">
+<h2>Creating an R Markdown file</h2>
+<ul>
+<li>In RStudio or Posit Cloud, go to File, New File, R Markdown…</li>
+</ul>
+<p><img data-src="lecture05_Rmarkdown01.png" style="height:80.0%"></p>
+</section>
+<section id="creating-an-r-markdown-file-1" class="slide level2">
+<h2>Creating an R Markdown file</h2>
+<p><img data-src="lecture05_Rmarkdown02.png" style="height:80.0%"></p>
+</section>
+<section id="creating-a-quarto-file" class="slide level2">
+<h2>Creating a Quarto file</h2>
+<ul>
+<li>In RStudio or Posit Cloud, go to File, New File, Quarto Document <em>or</em> Quarto Presentation</li>
+</ul>
+<p><img data-src="lecture05_quarto01.png" style="height:80.0%"></p>
+</section>
+<section id="creating-a-quarto-file-1" class="slide level2">
+<h2>Creating a Quarto file</h2>
+<ul>
+<li>In RStudio or Posit Cloud, go to File, New File, Quarto Document <em>or</em> Quarto Presentation</li>
+</ul>
+<p><img data-src="lecture05_quarto02.png" style="height:80.0%"></p>
+</section>
+<section id="creating-a-sweave-file" class="slide level2">
+<h2>Creating a Sweave File</h2>
+<ul>
+<li>In RStudio or Posit Cloud, go to File, New File, R Sweave</li>
+<li>You’ll get what looks like a blank .tex file, but with extension .Rnw</li>
+</ul>
+<p><img data-src="lecture05_sweave01.png" style="height:80.0%"></p>
+</section>
+<section id="creating-a-sweave-file-1" class="slide level2">
+<h2>Creating a Sweave File</h2>
+<ul>
+<li>Recommended: go to Tools, Global Options, Sweave, and change settings:
+<ul>
+<li>Weave Rnw files using <code>knitr</code></li>
+<li>Tick ‘Use tinytex when compiling .tex files’</li>
+<li><strong>Note:</strong> if weaving using <code>knitr</code>, don’t use Sweave chunk options</li>
+</ul></li>
+</ul>
+<p><img data-src="lecture05_sweave02.png" style="height:80.0%"></p>
+</section>
+<section id="basic-markdown-syntax" class="slide level2">
+<h2>Basic Markdown Syntax</h2>
+<ul>
+<li><a href="https://www.markdownguide.org/cheat-sheet/">Markdown Cheat Sheet</a></li>
+<li><a href="https://quarto.org/docs/authoring/markdown-basics.html">Markdown Basics</a></li>
+</ul>
+<p><img data-src="lecture05_Rmarkdown03.png" style="height:70.0%"></p>
+</section>
+<section id="code-chunks-r-markdown-and-quarto" class="slide level2">
+<h2>Code Chunks: R Markdown and Quarto</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb2-1"><a href=""></a>```{r chunklabel}</span>
+<span id="cb2-2"><a href=""></a># R code goes here</span>
+<span id="cb2-3"><a href=""></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>The ‘three backtick’ syntax is common to R Markdown and Quarto</li>
+<li>Labeling the chunk is optional</li>
+<li>Makes debugging easier</li>
+<li>Chunk labels cannot be duplicated</li>
+</ul>
+</section>
+<section id="chunk-languages-r-markdown-and-quarto" class="slide level2">
+<h2>Chunk Languages: R Markdown and Quarto</h2>
+<ul>
+<li><code>r</code> in the chunk header denotes the language of the chunk; many others are supported (e.g., <code>python</code>, <code>sql</code>)</li>
+<li>SAS chunks are supported via the <code>SASmarkdown</code> R package
+<ul>
+<li>See <a href="https://sscc.wisc.edu/sscc/pubs/sas/Markdown/index.html">documentation</a></li>
+<li>Requires SAS to be installed on your machine</li>
+</ul></li>
+</ul>
+</section>
+<section id="code-chunks-sweave" class="slide level2">
+<h2>Code Chunks: Sweave</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a href=""></a>&lt;&lt;chunklabel&gt;&gt;=</span>
+<span id="cb3-2"><a href=""></a># R code goes here</span>
+<span id="cb3-3"><a href=""></a>@</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>One does not specify the language <code>r</code> in the chunk header, because Sweave only supports R chunks</li>
+<li>One can use <code>knitr</code> package rather than classic Sweave to weave .Rnw files (see <a href="https://support.posit.co/hc/en-us/articles/200532247-Weaving-Rnw-Files-in-the-RStudio-IDE">here</a>)</li>
+</ul>
+</section>
+<section id="chunk-options-r-markdown-and-quarto" class="slide level2">
+<h2>Chunk Options: R Markdown and Quarto</h2>
+<ul>
+<li>Chunk options can be set globally, using <code>knitr::opts_chunk$set()</code></li>
+<li>They can also be set for an individual chunk, in two ways:
+<ul>
+<li>Option 1:</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a href=""></a>```{r chunklabel, echo=FALSE, eval=TRUE, warning=FALSE}</span>
+<span id="cb4-2"><a href=""></a># R code goes here</span>
+<span id="cb4-3"><a href=""></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code> -    Option 2:</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb6-1"><a href=""></a>```{r chunklabel}</span>
+<span id="cb6-2"><a href=""></a>#| echo: false</span>
+<span id="cb6-3"><a href=""></a>#| eval: true</span>
+<span id="cb6-4"><a href=""></a>#| warning: false</span>
+<span id="cb6-5"><a href=""></a></span>
+<span id="cb6-6"><a href=""></a># R code goes here</span>
+<span id="cb6-7"><a href=""></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="available-chunk-options-r-markdown" class="slide level2">
+<h2>Available Chunk Options: R Markdown</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Option</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>eval</td>
+<td style="text-align: left;">Evaluate the code chunk</td>
+</tr>
+<tr class="even">
+<td>echo</td>
+<td style="text-align: left;">Include source code in output</td>
+</tr>
+<tr class="odd">
+<td>include</td>
+<td style="text-align: left;">Include source code and/or chunk output in output</td>
+</tr>
+<tr class="even">
+<td>results</td>
+<td style="text-align: left;">How to display text results</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td style="text-align: left;">Include R warnings in output</td>
+</tr>
+<tr class="even">
+<td>message</td>
+<td style="text-align: left;">Include R messages in output</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>There are also many chunk options for controlling the appearance of figures</li>
+<li>Full list on <a href="https://yihui.org/knitr/options/">Yihui Xie’s website</a></li>
+</ul>
+</section>
+<section id="available-chunk-options-quarto" class="slide level2">
+<h2>Available Chunk Options: Quarto</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 78%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>eval</td>
+<td style="text-align: left;">Evaluate the code chunk</td>
+</tr>
+<tr class="even">
+<td>echo</td>
+<td style="text-align: left;">Include source code in output</td>
+</tr>
+<tr class="odd">
+<td>include</td>
+<td style="text-align: left;">Include source code and/or chunk output in output</td>
+</tr>
+<tr class="even">
+<td>output</td>
+<td style="text-align: left;">Include the results of executing the code in the output (<code>true</code>, <code>false</code>, or <code>asis</code> to indicate that the output should be treated as raw markdown)</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td style="text-align: left;">Include R warnings in output</td>
+</tr>
+<tr class="even">
+<td>message</td>
+<td style="text-align: left;">Include R messages in output</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><a href="https://quarto.org/docs/computations/execution-options.html">Full list of Quarto chunk options</a></li>
+</ul>
+</section>
+<section id="sweave-chunk-options" class="slide level2">
+<h2>Sweave Chunk Options</h2>
+<ul>
+<li>Similar to R Markdown, but with different values of the <code>results</code> option:</li>
+</ul>
+<table class="caption-top">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 56%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>R Markdown</th>
+<th>Sweave</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>‘markup’</td>
+<td>‘tex’</td>
+<td>Render as marked-up text or LaTeX code, according to the output format</td>
+</tr>
+<tr class="even">
+<td>‘asis’</td>
+<td>‘verbatim’</td>
+<td>Display in the output file verbatim without any special formatting</td>
+</tr>
+<tr class="odd">
+<td>‘hide’</td>
+<td>‘hide’</td>
+<td>Suppress display of results from output file</td>
+</tr>
+<tr class="even">
+<td>‘hold’</td>
+<td></td>
+<td>All text output is collected and placed after all the source code within the chunk</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>See <a href="https://cran.r-project.org/doc/manuals/r-patched/packages/utils/vignettes/Sweave.pdf">Sweave user manual</a> (updated Nov 2025)</li>
+</ul>
+</section>
+<section id="r-code-chunks-example-code-only" class="slide level2">
+<h2>R Code Chunks: Example (Code Only)</h2>
+<ul>
+<li>How the chunk appears in the <code>.qmd</code> or .Rmd source file vs.&nbsp;in the output</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb7-1"><a href=""></a>```{r, echo=TRUE, eval=TRUE, include=TRUE}</span>
+<span id="cb7-2"><a href=""></a>library(tidyverse)</span>
+<span id="cb7-3"><a href=""></a>library(readxl)</span>
+<span id="cb7-4"><a href=""></a>corolla &lt;- read_excel("surf4cars_Toyota_Corolla.xlsx") %&gt;% </span>
+<span id="cb7-5"><a href=""></a>  filter(YearModel &gt;= 2015)</span>
+<span id="cb7-6"><a href=""></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb8-2"><a href=""></a><span class="fu">library</span>(readxl)</span>
+<span id="cb8-3"><a href=""></a>corolla <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"surf4cars_Toyota_Corolla.xlsx"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-4"><a href=""></a>  <span class="fu">filter</span>(YearModel <span class="sc">&gt;=</span> <span class="dv">2015</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="r-code-chunks-example-display-code-and-output" class="slide level2">
+<h2>R Code Chunks: Example (Display Code and Output)</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb9-1"><a href=""></a>```{r surf4cars, echo=TRUE, eval=TRUE, include=TRUE}</span>
+<span id="cb9-2"><a href=""></a>corolla %&gt;%  </span>
+<span id="cb9-3"><a href=""></a>  group_by(TransmissionType) %&gt;% </span>
+<span id="cb9-4"><a href=""></a>  summarise(MeanPrice = mean(AskingPrice))</span>
+<span id="cb9-5"><a href=""></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>corolla <span class="sc">%&gt;%</span>  </span>
+<span id="cb10-2"><a href=""></a>  <span class="fu">group_by</span>(TransmissionType) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">MeanPrice =</span> <span class="fu">mean</span>(AskingPrice))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  TransmissionType MeanPrice
+  &lt;chr&gt;                &lt;dbl&gt;
+1 Automatic          280559.
+2 Manual             264062 </code></pre>
+</div>
+</div>
+</section>
+<section id="r-code-chunks-example-display-output-only" class="slide level2">
+<h2>R Code Chunks: Example (Display Output Only)</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb12-1"><a href=""></a>```{r surf4cars2, echo=FALSE, eval=TRUE, include=TRUE}</span>
+<span id="cb12-2"><a href=""></a>corolla %&gt;%  </span>
+<span id="cb12-3"><a href=""></a>  group_by(TransmissionType) %&gt;% </span>
+<span id="cb12-4"><a href=""></a>  summarise(MeanPrice = mean(AskingPrice))</span>
+<span id="cb12-5"><a href=""></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  TransmissionType MeanPrice
+  &lt;chr&gt;                &lt;dbl&gt;
+1 Automatic          280559.
+2 Manual             264062 </code></pre>
+</div>
+</div>
+</section>
+<section id="r-code-chunks-example-display-code-only-dont-run" class="slide level2">
+<h2>R Code Chunks: Example (Display Code Only; Don’t Run)</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb14-1"><a href=""></a>```{r surf4cars3, echo=TRUE, eval=FALSE, include=TRUE}</span>
+<span id="cb14-2"><a href=""></a>corolla %&gt;%  </span>
+<span id="cb14-3"><a href=""></a>  group_by(TransmissionType) %&gt;% </span>
+<span id="cb14-4"><a href=""></a>  summarise(MeanPrice = mean(AskingPrice))</span>
+<span id="cb14-5"><a href=""></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>corolla <span class="sc">%&gt;%</span>  </span>
+<span id="cb15-2"><a href=""></a>  <span class="fu">group_by</span>(TransmissionType) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">MeanPrice =</span> <span class="fu">mean</span>(AskingPrice))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="r-code-chunks-example-run-code-but-display-nothing" class="slide level2">
+<h2>R Code Chunks: Example (Run Code but Display Nothing)</h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb16-1"><a href=""></a>```{r surf4cars4, echo=TRUE, eval=TRUE, include=FALSE}</span>
+<span id="cb16-2"><a href=""></a>corolla %&gt;%  </span>
+<span id="cb16-3"><a href=""></a>  group_by(TransmissionType) %&gt;% </span>
+<span id="cb16-4"><a href=""></a>  summarise(MeanPrice = mean(AskingPrice))</span>
+<span id="cb16-5"><a href=""></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="including-code-and-output-outside-chunks" class="slide level2">
+<h2>Including Code and Output Outside Chunks</h2>
+<ul>
+<li>We can put text in code (verbatim) font style by putting the text within a single set of backticks</li>
+<li>We can run code outside of a chunk by putting the text within a single set of backticks with the letter <code>r</code> at the start</li>
+</ul>
+</section>
+<section id="including-code-and-output-outside-chunks-example" class="slide level2">
+<h2>Including Code and Output Outside Chunks: Example</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb17-1"><a href=""></a>```{r surf4cars5, echo=TRUE, eval=TRUE, include=FALSE}</span>
+<span id="cb17-2"><a href=""></a>corolla %&gt;%  </span>
+<span id="cb17-3"><a href=""></a>  group_by(TransmissionType) %&gt;% </span>
+<span id="cb17-4"><a href=""></a>  summarise(MeanPrice = mean(AskingPrice)) %&gt;% </span>
+<span id="cb17-5"><a href=""></a>  filter(TransmissionType == "Automatic") -&gt; myoutput</span>
+<span id="cb17-6"><a href=""></a>mymean &lt;- myoutput$MeanPrice[1]</span>
+<span id="cb17-7"><a href=""></a>library(priceR)</span>
+<span id="cb17-8"><a href=""></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb18-1"><a href=""></a>- The mean price of a Toyota Corolla with automatic transmission is </span>
+<span id="cb18-2"><a href=""></a>`r format_currency(mymean, "R") %&gt;% str_replace(",", " ")`.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>The mean price of a Toyota Corolla with automatic transmission is R280 559.</li>
+</ul>
+</section>
+<section id="including-plots-in-the-output" class="slide level2">
+<h2>Including Plots in the Output</h2>
+<ul>
+<li>Provided that <code>eval</code> and <code>include</code> are set to <code>TRUE</code>, plots created by the code will be included in the output file</li>
+<li>We can use other chunk options such as <code>out.height</code> and <code>out.width</code> to resize the plot if desired</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb19-1"><a href=""></a>```{r, echo=FALSE}</span>
+<span id="cb19-2"><a href=""></a>corolla %&gt;%  </span>
+<span id="cb19-3"><a href=""></a>  group_by(TransmissionType) %&gt;% </span>
+<span id="cb19-4"><a href=""></a>  summarise(MeanPrice = mean(AskingPrice)) %&gt;% </span>
+<span id="cb19-5"><a href=""></a>  ggplot(mapping = aes(x = TransmissionType, y = MeanPrice)) +</span>
+<span id="cb19-6"><a href=""></a>  geom_col(fill = "cyan") + </span>
+<span id="cb19-7"><a href=""></a>  labs(x = "Transmission Type", y = "Mean Price", </span>
+<span id="cb19-8"><a href=""></a>       title = "Toyota Corolla Transmission Type vs. Mean Price", </span>
+<span id="cb19-9"><a href=""></a>       caption = "Source: surf4cars.co.za")</span>
+<span id="cb19-10"><a href=""></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="including-plots-in-the-output-1" class="slide level2">
+<h2>Including Plots in the Output</h2>
+
+<img data-src="sasa_assessments_slides_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch"></section>
+<section id="including-mathematical-formulas" class="slide level2">
+<h2>Including Mathematical Formulas</h2>
+<ul>
+<li>One can easily include mathematical formulas in R Markdown or Quarto reports using basic LaTeX syntax</li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb20-1"><a href=""></a>- The equation of the simple linear regression model is </span>
+<span id="cb20-2"><a href=""></a>${y_i = \beta_0 + \beta_1 x_{i} + \epsilon_i}$</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>The equation of the linear regression model is <span class="math inline">\({y_i = \beta_0 + \beta_1 x_{i} + \epsilon_i}\)</span></li>
+<li>This is even more seamless in Sweave since the whole source file is structured like a .tex file</li>
+</ul>
+</section>
+<section id="r-markdown-and-quarto-headers" class="slide level2">
+<h2>R Markdown and Quarto Headers</h2>
+<ul>
+<li>YAML headers containing metadata for the output file (title, author, date, etc.) are placed between two sets of <code>---</code></li>
+<li>Some of these are automatically generated using the dialog box we saw above</li>
+<li>The syntax is slightly different for R Markdown vs.&nbsp;Quarto (e.g., <code>output</code> vs.&nbsp;<code>format</code>)</li>
+<li>Below is an example from a Quarto file</li>
+</ul>
+<pre><code>---
+title: "Generating Reports Using Quarto"
+format:
+  revealjs:
+    default
+  beamer:
+    default
+execute:
+  echo: true
+  warning: false
+  message: false
+monofont: "Courier New"
+monofontoptions: "Scale=0.5"
+urlcolor: blue
+---</code></pre>
+</section>
+<section id="r-markdown-and-quarto-headers-1" class="slide level2">
+<h2>R Markdown and Quarto Headers</h2>
+<ul>
+<li>When outputting an R Markdown or Quarto file to PDF, one can use the YAML header to include a .tex file that is prepended to the .tex file generated during compilation</li>
+<li>This is a useful way to load LaTeX packages or control other LaTeX settings</li>
+<li>See the following example from an R Markdown YAML header:</li>
+</ul>
+<div class="sourceCode" id="cb22"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb22-1"><a href=""></a>output: </span>
+<span id="cb22-2"><a href=""></a>  pdf_document:</span>
+<span id="cb22-3"><a href=""></a>    includes:</span>
+<span id="cb22-4"><a href=""></a>      in_header: "preamble.tex"</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section></section>
+<section>
+<section id="setting-an-assessment-template-in-r-markdown-or-sweave" class="title-slide slide level1 center">
+<h1>Setting an Assessment Template in R Markdown or Sweave</h1>
+
+</section>
+<section id="r-markdown-source-file" class="slide level2">
+<h2>R Markdown Source File</h2>
+<ul>
+<li>We will now explore how to create an R Markdown source file for your assessment</li>
+<li>Two templates are provided on the workshop Github page</li>
+<li>Each template has the following features:
+<ul>
+<li>Includes a .tex preamble file with some useful R packages and document settings</li>
+<li>Uses parameters from an external script that automatically populate information such as assessment name and number, subject name and code, qualification name and code, examiner name, moderator name, assessment date and time</li>
+<li>Automatically calculates and prints total marks per question and for the whole assessment</li>
+<li>Uses conditional logic to include only content that should be included for the question paper and memo, respectively</li>
+<li>Uses a special symbol (red square) to denote wherever a mark is awarded in the memo</li>
+</ul></li>
+<li>The template contains a few ‘dummy questions’ for illustration purposes</li>
+</ul>
+</section>
+<section id="exploring-the-templates" class="slide level2">
+<h2>Exploring the Templates</h2>
+<ul>
+<li>We will now spend some time exploring the templates to understand their structure and content</li>
+<li>We will start with the output files and then look at the source code</li>
+<li>After that, we will look at the R script that will set the assessment parameters and compile the source file to create the question paper and memorandum</li>
+</ul>
+</section>
+<section id="example-1-abc260s-test-1" class="slide level2">
+<h2>Example 1: ABC260S Test 1</h2>
+<ul>
+<li>Let’s exit the presentation and explore our first example</li>
+<li>It consists of:
+<ul>
+<li>A few miscellaneous multiple choice questions</li>
+<li>A basic descriptive statistics question</li>
+<li>A basic mathematical statistics question</li>
+<li>A basic R coding question</li>
+</ul></li>
+<li>The source file is <a href="templates/ABC260S_Test_1_2025.Rmd"><code>ABC260S_Test_1_2025.Rmd</code></a></li>
+<li>The output files are <a href="templates/ABC260S_Test_1_2025_QP.pdf"><code>ABC260S_Test_1_2025_QP.pdf</code></a> (question paper) and <a href="templates/ABC260S_Test_1_2025_Memo.pdf"><code>ABC260S_Test_1_2025_Memo.pdf</code></a> (memorandum)</li>
+</ul>
+</section>
+<section id="sweave-source-file" class="slide level2">
+<h2>Sweave Source File</h2>
+<ul>
+<li>A .Rnw source file is also provided for those who prefer this format</li>
+<li>The source file is <a href="templates/ABC260S_Test_1_2025.Rnw"><code>ABC260S_Test_1_2025.Rnw</code></a></li>
+<li>And, for the second example discussed below, <a href="templates/ABC260S_Test_2_2025.Rnw"><code>ABC260S_Test_2_2025.Rnw</code></a></li>
+<li>The chunk options use <code>knitr</code> syntax (meaning they will only work if the files are weaved using <code>knitr</code> rather than Sweave)</li>
+</ul>
+</section></section>
+<section>
+<section id="setting-and-compiling-an-assessment-generating-script-in-r" class="title-slide slide level1 center">
+<h1>Setting and compiling an assessment generating script in R</h1>
+
+</section>
+<section id="compiler-r-script-r-markdown" class="slide level2 scrollable">
+<h2>Compiler R Script: R Markdown</h2>
+<ul>
+<li>The R script template <a href="templates/assessment_compiler_Rmd.R"><code>assessment_compiler_Rmd.R</code></a> contains code to do the following:</li>
+</ul>
+<ol type="1">
+<li>Load required R packages</li>
+<li>Set values of assessment parameters (subject code, assessment date, etc.)</li>
+<li>Compile the .Rmd source file twice (once for question paper, once for memo)</li>
+</ol>
+<ul>
+<li>Note: if using .Rnw source files, rather use the <a href="templates/assessment_compiler_Rnw.R"><code>assessment_compiler_Rnw.R</code></a> script template</li>
+<li>Let us have a look at the template</li>
+</ul>
+</section>
+<section id="example-2-abc260s-test-2" class="slide level2">
+<h2>Example 2: ABC260S Test 2</h2>
+<ul>
+<li>The output files appear almost identical to those of Example 1</li>
+<li>However, the level of automation in the source .Rmd file is higher:
+<ul>
+<li>Randomisation is incorporated into the setting of the questions</li>
+<li>Solutions are automatically calculated with steps</li>
+</ul></li>
+<li>The source file is <a href="templates/ABC260S_Test_2_2025.Rmd"><code>ABC260S_Test_2_2025.Rmd</code></a> (or <a href="templates/ABC260S_Test_2_2025.Rnw"><code>Rnw</code></a> version)</li>
+<li>The output files are <a href="templates/ABC260S_Test_2_2025_QP.pdf"><code>ABC260S_Test_2_2025_QP.pdf</code></a> (question paper) and <a href="templates/ABC260S_Test_2_2025_Memo.pdf"><code>ABC260S_Test_2_2025_Memo.pdf</code></a> (memorandum)</li>
+</ul>
+</section>
+<section id="example-2" class="slide level2">
+<h2>Example 2</h2>
+<ul>
+<li>We can use basic randomisation functions in R to introduce some randomisation into multiple choice questions</li>
+<li>Statistics answers are easy to auto-calculate due to the many built-in statistics functions in R</li>
+<li>Auto-calculating mathematics answers is a bit trickier but Python’s <a href="https://www.sympy.org/en/index.html">SymPy</a> symbolic mathematics library can help us</li>
+<li>It is available to R users through the <code>RSymPy</code> R package</li>
+</ul>
+</section></section>
+<section>
+<section id="auto-generated-randomised-lms-assessments-using-r-exams" class="title-slide slide level1 center">
+<h1>Auto-Generated, Randomised LMS Assessments Using R-exams</h1>
+
+</section>
+<section id="aims-for-the-afternoon" class="slide level2">
+<h2>Aims for the Afternoon</h2>
+<ul>
+<li>Pivot from paper-based assessments to online assessments deployed in an LMS</li>
+<li>Learn the syntax required to use the <code>exams</code> package in R</li>
+<li>Learn how to set online assessments that include the features covered earlier (e.g., multiple random versions; automated generation of memo)</li>
+<li>Explore how students experience the assessment (and feedback) in an LMS</li>
+</ul>
+</section>
+<section id="motivation" class="slide level2">
+<h2>Motivation</h2>
+<ul>
+<li>Most LMSs allow users to set many different types of question (e.g., multiple choice; numerical answer; essay)</li>
+<li>Some LMSs also allow users to create a ‘pool’ or ‘bank’ containing multiple versions of a question, with one question randomly drawn from the pool each time a student does an assessment</li>
+<li>The problem is that it is very time-consuming to design questions within the LMS interface (especially if we want to create many different versions of the question)</li>
+<li>What if this could all be automated?</li>
+</ul>
+</section>
+<section id="some-demos" class="slide level2">
+<h2>Some Demos</h2>
+<ul>
+<li>Here are three screencast videos showing aspects of assessments I’ve deployed to Blackboard from R-exams</li>
+</ul>
+</section>
+<section id="statistical-quality-control-online-assessment" class="slide level2">
+<h2>Statistical Quality Control Online Assessment</h2>
+<video src="videos/Stat_Quality_Control_Online_Test_and_Feedback.mp4" controls="" preload="metadata">
+Your browser does not support the video tag.
+</video>
+</section>
+<section id="r-coding-online-assessment" class="slide level2">
+<h2>R Coding Online Assessment</h2>
+<video src="videos/Programming_Stats_Online_Test_Student_View.mp4" controls="" preload="metadata">
+Your browser does not support the video tag.
+</video>
+</section>
+<section id="mathematical-statistics-online-assessment" class="slide level2">
+<h2>Mathematical Statistics Online Assessment</h2>
+<video src="videos/Math_Stats_Online_Test_and_Feedback.mp4" controls="" preload="metadata">
+Your browser does not support the video tag.
+</video>
+</section>
+<section id="the-exams-r-package" class="slide level2">
+<h2>The exams R Package</h2>
+<ul>
+<li>Originally developed for auto-generation of paper-based exams <span class="citation" data-cites="Grun09">(<a href="#/references" role="doc-biblioref" onclick="">Grün and Zeileis 2009</a>)</span></li>
+<li>Subsequently adapted for auto-generation of e-learning exams <span class="citation" data-cites="Zeileis14">(<a href="#/references" role="doc-biblioref" onclick="">Zeileis, Umlauf, and Leisch 2014</a>)</span></li>
+<li>Has a dedicated website, <a href="https://r-exams.org/">r-exams.org</a></li>
+<li>Has an active community support forum at <a href="https://r-forge.r-project.org/projects/exams/">R-Forge</a></li>
+<li>Stable package version available on CRAN</li>
+<li>Development version available via <code>install.packages("exams", repos="http://R-Forge.R-project.org")</code></li>
+</ul>
+</section>
+<section id="workflow-to-create-an-lms-assessment-using-r-exams" class="slide level2 scrollable">
+<h2>Workflow to Create an LMS Assessment Using R-exams</h2>
+<ol type="1">
+<li>Create exercise (question) files using R Markdown or Sweave</li>
+<li>Compile exercise files into an assessment using <code>exams2html</code> for preview purposes</li>
+<li>Compile exercise files into a zip for export to LMS using <code>exams2xyz</code> function (e.g., <code>exams2blackboard</code>, <code>exams2moodle</code>, <code>exams2canvas</code>, <code>exams2sakai::exams2sakai</code>)</li>
+<li>Import the zip into the LMS</li>
+<li>Deploy the exercises into an LMS test and adjust settings</li>
+</ol>
+</section>
+<section id="creating-exercise-files" class="slide level2">
+<h2>Creating Exercise Files</h2>
+<ul>
+<li>The R <code>exams</code> package comes with a lot of ready-made examples in both R Markdown (.Rmd) and Sweave (.Rnw) formats</li>
+<li>To find them, run <code>.libPaths()</code> in R</li>
+<li>Navigate to the folder that is listed</li>
+<li>Open the <code>exams</code> folder and the <code>exercises</code> subfolder</li>
+<li>You will find many .Rmd and .Rnw files</li>
+<li>Most of the examples are statistics questions</li>
+</ul>
+</section>
+<section id="structure-of-exercise-files" class="slide level2">
+<h2>Structure of Exercise Files</h2>
+<ul>
+<li>The exercise .Rmd or .Rnw file is like those we saw this morning</li>
+<li>However, along with code chunks, it contains three sections:
+<ul>
+<li>Question: content the student will be shown when they take the test</li>
+<li>Solution: content the student <em>could</em> (if you wish) be shown as feedback after taking the test</li>
+<li>Meta-information: question settings for LMS</li>
+</ul></li>
+</ul>
+</section>
+<section id="multiple-choice-question-mcq-exercises" class="slide level2">
+<h2>Multiple Choice Question (MCQ) Exercises</h2>
+<ul>
+<li>Most LMSs allow single-choice and multi-choice MCQ</li>
+<li>Let’s consider a homemade example of each:
+<ul>
+<li>Single-choice: <a href="templates/capital_cities.Rmd"><code>capital_cities.Rmd</code></a> or <a href="templates/capital_cities.Rnw"><code>capital_cities.Rnw</code></a></li>
+<li>Multi-choice: <a href="templates/two_numbers.Rmd"><code>two_numbers.Rmd</code></a> or <a href="templates/two_numbers.Rnw"><code>two_numbers.Rnw</code></a></li>
+</ul></li>
+</ul>
+</section>
+<section id="numerical-answer-exercises" class="slide level2">
+<h2>Numerical Answer Exercises</h2>
+<ul>
+<li>Like MCQ, auto-marking</li>
+<li>Marking is all-or-nothing based on whether entered answer is within a specified tolerance of the correct answer
+<ul>
+<li>Example 1: <a href="templates/calculate_gradient.Rmd"><code>calculate_gradient.Rmd</code></a> or <a href="templates/calculate_gradient.Rnw"><code>calculate_gradient.Rnw</code></a></li>
+<li>Example 2: <a href="templates/calculate_lotto.Rmd"><code>calculate_lotto.Rmd</code></a> or <a href="templates/calculate_lotto.Rnw"><code>calculate_lotto.Rnw</code></a></li>
+</ul></li>
+</ul>
+</section>
+<section id="essay-or-file-upload-exercises" class="slide level2">
+<h2>Essay (or File Upload) Exercises</h2>
+<ul>
+<li>Great when you want the student to write a paragraph</li>
+<li>Or submit code</li>
+<li>Or upload a plot</li>
+<li>Or upload a photo of handwritten work (e.g., derivation)</li>
+<li>Downside: not auto-marking</li>
+<li>May not be supported in all LMSs</li>
+</ul>
+</section>
+<section id="essay-exercises-examples" class="slide level2">
+<h2>Essay Exercises: Examples</h2>
+<ul>
+<li>Example 1: <a href="templates/upload_scatterplot.Rmd"><code>upload_scatterplot.Rmd</code></a> or <a href="templates/upload_scatterplot.Rnw"><code>upload_scatterplot.Rnw</code></a>
+<ul>
+<li>Example 2: <a href="templates/upload_expectation.Rmd"><code>upload_expectation.Rmd</code></a> or <a href="templates/upload_expectation.Rnw"><code>upload_expectation.Rnw</code></a></li>
+<li>When generating LaTeX code in R character variables in the exercise templates, be aware that an extra backslash is required in Rnw files compared to Rmd files</li>
+</ul></li>
+</ul>
+</section>
+<section id="tips-for-exercise-files" class="slide level2">
+<h2>Tips for Exercise Files</h2>
+<ul>
+<li>Do not set seed in the template; rather set it in the main R script
+<ul>
+<li>Otherwise all random versions of exercise will be the same!</li>
+</ul></li>
+<li>Use <code>include_supplement</code> R function if you want to include a file from your PC in the question (e.g., a data file)</li>
+<li>Use very basic LaTeX: no packages (may not be supported by LMSs)
+<ul>
+<li>Use <code>eqnarray</code> environments for multi-line equations</li>
+</ul></li>
+</ul>
+</section>
+<section id="creating-the-r-script-to-generate-the-test" class="slide level2">
+<h2>Creating the R script to generate the test</h2>
+<ul>
+<li>Combine the exercise files (.Rnw or .Rmd) in a list object</li>
+<li>Set the parameter for how many versions of the test you want to generate</li>
+<li>Set the pseudorandom number generator seed (<code>set.seed</code>)</li>
+<li>Run <code>exams2html</code> first to preview your questions in your browser
+<ul>
+<li>This is not a guarantee that they will look the same in the LMS</li>
+</ul></li>
+<li>Run <code>exams2xyz</code> to generate a zip file that can be imported into LMS</li>
+<li>Example: <a href="templates/generate_test_Rmd.R"><code>generate_test_Rmd.R</code></a> or <a href="templates/generate_test_Rnw.R"><code>generate_test_Rnw.R</code></a></li>
+</ul>
+</section>
+<section id="importing-zip-file-into-lms" class="slide level2">
+<h2>Importing Zip File into LMS</h2>
+<ul>
+<li>Instructions will vary by LMS</li>
+<li>Check that settings from exercise metadata have pulled through to LMS</li>
+<li>Always test out the test in the LMS before deploying to students (e.g., in Student Preview mode)</li>
+<li>Or, deploy a practice test (with different seed) and let students be your code testers</li>
+</ul>
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Grun09" class="csl-entry" role="listitem">
+Grün, Bettina, and Achim Zeileis. 2009. <span>“Automatic Generation of Exams in <span>R</span>.”</span> <em>Journal of Statistical Software</em> 29 (10): 1–14. <a href="https://doi.org/10.18637/jss.v029.i10">https://doi.org/10.18637/jss.v029.i10</a>.
+</div>
+<div id="ref-Zeileis14" class="csl-entry" role="listitem">
+Zeileis, Achim, Nikolaus Umlauf, and Friedrich Leisch. 2014. <span>“Flexible Generation of e-Learning Exams in <span>R</span>: <span>Moodle</span> Quizzes, <span>OLAT</span> Assessments, and Beyond.”</span> <em>Journal of Statistical Software</em> 58 (1): 1–36. <a href="https://doi.org/10.18637/jss.v058.i01">https://doi.org/10.18637/jss.v058.i01</a>.
+</div>
+</div>
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="sasa_assessments_slides_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="sasa_assessments_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="sasa_assessments_slides_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="sasa_assessments_slides_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="sasa_assessments_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="sasa_assessments_slides_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="sasa_assessments_slides_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="sasa_assessments_slides_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="sasa_assessments_slides_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="sasa_assessments_slides_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
