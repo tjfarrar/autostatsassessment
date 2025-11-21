@@ -6,7 +6,7 @@ This repo has been created for a pre-conference workshop offered in conjunction 
 - The [slides](https://github.com/tjfarrar/autostatsassessment/tree/main/slides) folder contains source and output files for the workshop slides.
 - The [videos](https://github.com/tjfarrar/autostatsassessment/tree/main/videos) contains screencast demos of some online assessments created in R's [`exams`](https://r-exams.org) package and deployed to Blackboard Ultra  
 
-<h3>Click <a href="https://tjfarrar.github.io/autostatsassessment/sasa_assessments_slides.html" target="_blank">here</a> to view the slides for the workshop.</h3>
+## [Workshop Slides](https://tjfarrar.github.io/autostatsassessment/sasa_assessments_slides.html)
 
 The [qmd source](https://github.com/tjfarrar/autostatsassessment/blob/main/sasa_assessments_slides.qmd) for the slides is also available. 
 
