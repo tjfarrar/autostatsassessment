@@ -54,6 +54,8 @@ pre[class] {
 ## Programme for the Day
 
 - [Link to programme](misc/Workshop_Programme_-_Automation_of_Setting_of_Assessments_using_R-25.11.2025.pdf)
+- Morning: PDF (e.g., paper-based) assessments
+- Afternoon: Learning Management System (LMS) assessments
 
 ## Audience Background
 
@@ -85,6 +87,13 @@ devtools::install_github("FedericoComoglio/rSymPy")
 # Install tinytex from tinytex R package
 tinytex::install_tinytex()
 ```
+
+## Github Repository
+
+![](images/github.png){height=360}
+
+
+- The [templates](https://github.com/tjfarrar/autostatsassessment/tree/main/templates) folder contains many useful templates and source files
 
 ## Old-Fashioned Workflow
 
