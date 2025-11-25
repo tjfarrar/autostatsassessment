@@ -476,7 +476,7 @@ ggplot(data.frame(x = c(supportmin, supportmax)), aes(x = x)) +
 \item \textit{[`r sum(qmarks[[4]])` marks]} Consider the dataset provided in the Excel file `surf4cars_Toyota_Corolla.xlsx`. A description of the columns in the dataset is as follows. Answer the following questions using R code and output only.
 
 ```{r echo=FALSE, eval=!params$domemo}
-toyota <- read_excel("surf4cars_Toyota_Corolla.xlsx")
+toyota <- read_excel("../misc/surf4cars_Toyota_Corolla.xlsx")
 datadf1 <- data.frame(Variables = names(toyota),
                      Description = c("Asking Price (Rand)",
                                      "Vehicle Make and Model",
@@ -520,7 +520,7 @@ summary(mylm)}}", sep = "")
 ```{r, echo=FALSE, eval=params$domemo}
 # This chunk runs code necessary to 
 #  display the correct output in the memo
-toyota <- read_excel("surf4cars_Toyota_Corolla.xlsx")
+toyota <- read_excel("../misc/surf4cars_Toyota_Corolla.xlsx")
 theformula <- str_c("AskingPrice ~ ", explanat[1], " + ", explanat[2]) %>% 
   as.formula
 mylm <- lm(theformula, data = toyota)

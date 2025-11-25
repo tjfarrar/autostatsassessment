@@ -247,7 +247,7 @@ polygon(x = c(2, 2, 3, 3, 2),
 \item \textit{[\Sexpr{sum(qmarks[[4]])} marks]} Consider the dataset provided in the Excel file \texttt{surf4cars\_Toyota\_Corolla.xlsx}. A description of the columns in the dataset is as follows. Answer the following questions using R code and output only.
 
 <<echo=FALSE, eval=!params$domemo>>=
-toyota <- read_excel("surf4cars_Toyota_Corolla.xlsx")
+toyota <- read_excel("../misc/surf4cars_Toyota_Corolla.xlsx")
 datadf1 <- data.frame(Variables = names(toyota),
                      Description = c("Asking Price (Rand)",
                                      "Vehicle Make and Model",
@@ -266,7 +266,7 @@ datadf1 <- data.frame(Variables = names(toyota),
   \item \textit{[\Sexpr{qmarks[[4]][1]} marks]} Fit a linear regression model to the data where Asking Price is the response variable and Year Model, Mileage, and Transmission Type are explanatory variables. Display a summary of the model output. 
 
 <<echo=params$domemo, eval=params$domemo>>=
-toyota <- read_excel("surf4cars_Toyota_Corolla.xlsx")
+toyota <- read_excel("../misc/surf4cars_Toyota_Corolla.xlsx")
 mylm <- lm(AskingPrice ~ YearModel + Mileage + TransmissionType, 
            data = toyota)
 summary(mylm)
