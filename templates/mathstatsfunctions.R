@@ -41,13 +41,13 @@ probdensityplot <- function(fX, xsupport, val, ineq) {
 # xminmax is a list of functions of x; if any element is a numeric it will be coerced to a function
 
 xyregionplot <- function(xminmax, yminmax, val, rv = "x", 
-                         ineq) {
+                         ineq, xlabexpr = "x", ylabexpr = "y") {
   if (val == as.integer(val)) {
     axsinc <- 1
   } else {
     axsinc <- 0.5
   }
-  par(mar = c(2, 3, 0, 0.1))
+  par(mar = c(3, 3, 0, 0.1))
 
   if (rv == "x") {
     xseq <- seq(xminmax[1], xminmax[2], 1e-3)
@@ -172,8 +172,10 @@ xyregionplot <- function(xminmax, yminmax, val, rv = "x",
   }
   axis(side = 1, at = xaxseq, labels = fractions(xaxseq), pos = 0)
   axis(side = 2, at = yaxseq, las = 1, labels = fractions(yaxseq), pos = 0)
-  mtext(expression(x), side = 1, las = 1, line = 0.5)
-  mtext(expression(y), side = 2, las = 1, line = 1.5)
+  myxlabexpr <- eval(parse(text = paste0("expression(", xlabexpr, ")")))
+  myylabexpr <- eval(parse(text = paste0("expression(", ylabexpr, ")")))
+  mtext(myxlabexpr, side = 1, las = 1, line = 1.5)
+  mtext(myylabexpr, side = 2, las = 1, line = 1.5)
 }
 
 # probdensityplot(fX = function(x) exp(-x), xsupport = c(0, 10), val = 2, ineq = "<=")
